@@ -9,6 +9,7 @@ from RangeSlider.RangeSlider import RangeSliderH
 global file
 global valuesDict
 
+#Functie die CSV (of txt mits juiste syntax) file path input neemt en een dictionary returnt. Timestamps zijn keys.
 def CSVToDict(file):
     out = dict()
     with open(file) as csvfile:
@@ -20,19 +21,25 @@ def CSVToDict(file):
             out[float(row[0].strip())] = rowToAdd
     return out
 
+#UI
 def main():
     root = tk.Tk()
     root.title("ManoMap Remake")
-
-    #todo
-    #load data
+    fileTitle = tk.StringVar()
     def openFile():
         global file
         global valuesDict
+        fileTitle.set("Loading file...")
         file = askopenfilename()
+        print(type(file))
         valuesDict = CSVToDict(file)
+        fileTitle.set(file.title())
     button = tk.Button(root, text="Select Input File", command=openFile)
     button.pack(side=tk.LEFT, pady=10, padx=10)
+
+    fileLabel = tk.Label(root, textvariable=fileTitle)
+    fileTitle.set("No file selected")
+    fileLabel.pack()
     #normal/filtered vs median filtering vragen
     #tijd filter eventueel
     #color values
@@ -65,58 +72,17 @@ def main():
 
     root.mainloop()
 
-
+#Toont plot in matplotlib nieuwe window. Kan naar externe module gerefactord worden
 def showPlot(firstSensor, lastSensor):
     global valuesDict
     p = dictionary_to_ndarray(valuesDict)
-    plt.imshow(p, cmap='gnuplot2', interpolation='nearest', aspect='auto', vmin= 0, vmax=100)
+    plt.imshow(p, cmap='inferno', interpolation='nearest', aspect='auto', vmin= 10, vmax=100)
     plt.yticks(np.arange(firstSensor, lastSensor + 1, 2))
 
     plt.axis([0, int(list(valuesDict)[-1]), lastSensor, firstSensor])
     plt.show()
 
-#https://stackoverflow.com/questions/20398920/physically-stretch-plot-in-horizontal-direction-in-python
-#voor testing purposes
-def genPerlinNoise():
-    def perlin(x, y, seed=0):
-        np.random.seed(seed)
-        p = np.arange(256, dtype=int)
-        np.random.shuffle(p)
-        p = np.stack([p, p]).flatten()
-        xi, yi = x.astype(int), y.astype(int)
-        xf, yf = x - xi, y - yi
-        u, v = fade(xf), fade(yf)
-        n00 = gradient(p[p[xi] + yi], xf, yf)
-        n01 = gradient(p[p[xi] + yi + 1], xf, yf - 1)
-        n11 = gradient(p[p[xi + 1] + yi + 1], xf - 1, yf - 1)
-        n10 = gradient(p[p[xi + 1] + yi], xf - 1, yf)
-        x1 = lerp(n00, n10, u)
-        x2 = lerp(n01, n11, u)
-        return lerp(x1, x2, v)
-
-
-    def lerp(a, b, x):
-        return a + x * (b - a)
-
-
-    def fade(t):
-        return 6 * t ** 5 - 15 * t ** 4 + 10 * t ** 3
-
-
-    def gradient(h, x, y):
-        vectors = np.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
-        g = vectors[h % 4]
-        return g[:, :, 0] * x + g[:, :, 1] * y
-
-    p = np.zeros((41, 1000))
-    for i in range(4):
-        freq = 2 ** i
-        liny = np.linspace(0, freq, 1000, endpoint=False)
-        linx = np.linspace(0, freq, 41, endpoint=False)
-        x, y = np.meshgrid(liny, linx)
-        p = perlin(x, y, seed=random.randint(0,200000)) / freq + p
-    return p
-
+#zet een dictionary om naar een 2D Numpy Array (gebruikt om te plotten, row 1 = sensor 1 etc...)
 def dictionary_to_ndarray(data_dict):
     values = list(data_dict.values())
     nd_array = np.stack(values)
