@@ -76,7 +76,7 @@ def main():
 def showPlot(firstSensor, lastSensor):
     global valuesDict
     p = dictionary_to_ndarray(valuesDict)
-    plt.imshow(p, cmap='inferno', interpolation='nearest', aspect='auto', vmin= 10, vmax=100)
+    plt.imshow(p, cmap='inferno', interpolation='nearest', aspect='auto', vmin= 0, vmax=100)
     plt.yticks(np.arange(firstSensor, lastSensor + 1, 2))
 
     plt.axis([0, int(list(valuesDict)[-1]), lastSensor, firstSensor])
