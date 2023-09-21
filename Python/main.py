@@ -21,6 +21,8 @@ def CSVToDict(file):
         rownumber = 1
         for row in rdr:
             rownumber+=1
+            if rownumber < 10:
+                continue
             rowToAdd = []
             for val in row[1:]:
                 currentVal = int(val.strip())
