@@ -1,5 +1,7 @@
 import random
 import tkinter as tk
+
+import matplotlib.pyplot
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
@@ -23,7 +25,7 @@ def CSVToDict(file):
             for val in row[1:]:
                 currentVal = int(val.strip())
                 rowToAdd.append(currentVal)
-            out[float(row[0].strip())] = rowToAdd
+            out[rownumber] = rowToAdd
     return out
 
 #UI
@@ -50,8 +52,6 @@ def main():
     #detect events
     #tijdstippen toevoegen
     #darmsecties indelen
-
-
 
     var = tk.StringVar()
     label = tk.Label(root, textvariable=var)
@@ -90,6 +90,7 @@ def main():
 #Toont plot in matplotlib nieuwe window. Kan naar externe module gerefactord worden
 def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold):
     global valuesDict
+    matplotlib.pyplot.close('all')
     p = dictionary_to_ndarray(valuesDict)
 
     minT = minThreshold
@@ -104,11 +105,12 @@ def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold):
         maxT = 3
         cmap = 'coolwarm'
         p = calculate_differences(p)
-    plt.imshow(p, cmap=cmap, interpolation='none', aspect='auto', vmin=minT, vmax=maxT)
+    tmp = plt.imshow(p, cmap=cmap, interpolation='none', aspect='auto', vmin=minT, vmax=maxT)
     plt.yticks(np.arange(firstSensor, lastSensor + 1, 2))
-
-    plt.axis([0, int(list(valuesDict)[-1])*10, lastSensor, firstSensor])
+    plt.axis([0, len(list(valuesDict)), lastSensor, firstSensor])
+    cb = plt.colorbar(tmp)
     plt.show()
+
 
 #zet een dictionary om naar een 2D Numpy Array (gebruikt om te plotten, row 1 = sensor 1 etc...)
 def dictionary_to_ndarray(data_dict):
@@ -120,7 +122,7 @@ def calculate_differences(arr):
     num_rows, num_cols = len(arr), len(arr[0])
     result = []
     for row in arr:
-        new_row = [row[0]]  # Initialize the new row with the first element
+        new_row = [row[0]]
         for i in range(1, num_cols):
             difference = row[i] - row[i - 1]
             new_row.append(difference)
