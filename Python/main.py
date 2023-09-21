@@ -1,7 +1,7 @@
 import random
 import tkinter as tk
-
-import matplotlib.pyplot
+import signalplot
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
@@ -82,8 +82,21 @@ def main():
         maxThreshold = int(thresholdVals[1])
         showPlot(first_sensor, last_sensor, minThreshold, maxThreshold)
 
+    def showSignalsPressed():
+        slidervals = sensorSlider.getValues()
+        first_sensor = int(slidervals[0])
+        last_sensor = int(slidervals[1])
+        thresholdVals = thresholdSlider.getValues()
+        minThreshold = int(thresholdVals[0])
+        maxThreshold = int(thresholdVals[1])
+        signalplot.show_combined_plot(valuesDict)
     button = tk.Button(root, text="Plot Data", command=showPlotPressed)
     button.pack(side=tk.LEFT, pady=10, padx=10)
+
+    signalButton = tk.Button(root, text="Plot signals", command=showSignalsPressed)
+    signalButton.pack(side=tk.LEFT, pady=10, padx=10)
+
+
     button = tk.Button(root, text="Detect Events")
     button.pack(side=tk.LEFT,pady=10, padx=10)
 
