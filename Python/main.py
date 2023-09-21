@@ -21,13 +21,11 @@ def CSVToDict(file):
         rownumber = 1
         for row in rdr:
             rownumber+=1
-            if rownumber < 9:
-                continue
             rowToAdd = []
             for val in row[1:]:
-                currentVal = int(val.strip().replace(",","").strip())
+                currentVal = int(val.strip())
                 rowToAdd.append(currentVal)
-            out[float(row[0].strip().replace(",",""))] = rowToAdd
+            out[rownumber] = rowToAdd
     return out
 
 #UI
