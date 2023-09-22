@@ -10,7 +10,7 @@ def CSVToDict(file):
         rownumber = 1
         for row in rdr:
             rownumber+=1
-            if rownumber % 1:
+            if rownumber % 100 == 0:
                 continue
             if rownumber < 10:
                 continue

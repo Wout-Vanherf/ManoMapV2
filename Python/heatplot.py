@@ -3,19 +3,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import manoutils
 
-
 #Toont plot in matplotlib nieuwe window. Kan naar externe module gerefactord worden
-
-
-def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMode, valuesDict):
+def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap='inferno'):
     matplotlib.pyplot.close('all')
     p = manoutils.dictionary_to_ndarray(valuesDict)
 
     minT = minThreshold
     maxT = maxThreshold
-    cmap = 'inferno'
+    cmap = colormap
     #te veel performance loss
-    #p = smooth_ndArray(p, 5)
+    #p = manoutils.smooth_ndArray(p, 5)
 
     #als differentialMode aan staat, toon het verschil ten opzichte van vorige waarde ipv de waarde zelf.
     if differentialMode:

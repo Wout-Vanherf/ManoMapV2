@@ -61,7 +61,7 @@ def main():
         thresholdVals = thresholdSlider.getValues()
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
-        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict)
+        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap='Greys')
 
     def showSignalsPressed():
         slidervals = sensorSlider.getValues()
