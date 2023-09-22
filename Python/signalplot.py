@@ -8,7 +8,7 @@ from tkinter.filedialog import askopenfilename
 def inferno_color(value):
     inferno_cmap = plt.get_cmap("inferno")
     color = inferno_cmap(value)
-    return (color[0],color[1],color[2],0.75)
+    return (color[0],color[1],color[2],0.5)
 
 def show_combined_plot(valuesDict):
 
@@ -25,7 +25,7 @@ def show_combined_plot(valuesDict):
         scaling_factor = 0.1 #compression of the values on the y scale to make them more compact
 
         y_values = [values[x]* scaling_factor + y_offset for values in data.values()]
-        plt.plot(x_values, y_values, label='sensor ' + str(x), linewidth=0.2, color= inferno_color(laatste_kleur))
+        plt.plot(x_values, y_values, label='sensor ' + str(x), linewidth=1, color= inferno_color(laatste_kleur))
         y_offset -= 5  # Increment Y offset for the next sensor
         laatste_kleur+= 1/(amount_of_sensors + 30)
 
