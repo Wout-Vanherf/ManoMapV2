@@ -40,9 +40,9 @@ def main():
     label = tk.Label(root, textvariable=var)
     var.set("Visible sensors:")
     label.pack()
-    hVar1 = tk.DoubleVar(value=0)
+    hVar1 = tk.DoubleVar(value=1)
     hVar2 = tk.DoubleVar(value=40)
-    sensorSlider = RangeSliderH(root, [hVar1, hVar2], Width=400, Height=65, padX=17, min_val=0, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    sensorSlider = RangeSliderH(root, [hVar1, hVar2], Width=400, Height=65, padX=17, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
     sensorSlider.pack()
 
     thresholdText = tk.StringVar()
@@ -70,8 +70,8 @@ def main():
         thresholdVals = thresholdSlider.getValues()
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
-        signalplot.show_combined_plot(valuesDict)
-    
+        signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold)
+
     def detectEventsPressed():
         distance = inputtxt.get("1.0", "end-1c")
         try:
@@ -89,7 +89,7 @@ def main():
                    height = 1,
                    width = 10)
     inputtxt.pack()
-    
+
     button = tk.Button(root, text="Plot Data", command=showPlotPressed)
     button.pack(side=tk.LEFT, pady=10, padx=10)
 
