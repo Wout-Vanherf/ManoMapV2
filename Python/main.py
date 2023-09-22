@@ -21,6 +21,8 @@ def CSVToDict(file):
         rownumber = 1
         for row in rdr:
             rownumber+=1
+            if rownumber % 100:
+                continue
             if rownumber < 10:
                 continue
             rowToAdd = []
@@ -70,7 +72,7 @@ def main():
     label.pack()
     hVar3 = tk.DoubleVar(value=10)
     hVar4 = tk.DoubleVar(value=200)
-    thresholdSlider = RangeSliderH(root, [hVar3, hVar4], Width=400, Height=65, padX=17, min_val=0, max_val=500, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    thresholdSlider = RangeSliderH(root, [hVar3, hVar4], Width=400, Height=65, padX=17, min_val=0, max_val=500, show_value=True, step_size=5, bar_radius=5, digit_precision='.0f')
     thresholdSlider.pack()
 
     def showPlotPressed():
