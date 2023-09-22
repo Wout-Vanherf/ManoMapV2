@@ -12,7 +12,7 @@ def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxT
     data = valuesDict
 
     x_values = list(data.keys())
-    amount_of_sensors = last_sensor - first_sensor
+    amount_of_sensors = last_sensor - first_sensor + 1
     y_offset = 100  # Starting Y value for the first sensor
 
     # Create a single subplot
@@ -36,7 +36,7 @@ def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxT
     plt.xticks(fontsize=8)
 # Adjust the y-axis ticks with custom tick locations and labels
     if(first_sensor==0):
-        tick_locations = np.arange(1, amount_of_sensors)
+        tick_locations = np.arange(1, amount_of_sensors + 1)
         tick_labels = [str(i + first_sensor) for i in tick_locations]  # Convert tick locations to string labels
     else:
         tick_locations = np.arange(1, amount_of_sensors + 1)
