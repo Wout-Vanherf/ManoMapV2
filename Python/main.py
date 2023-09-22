@@ -1,4 +1,3 @@
-import random
 import tkinter as tk
 import signalplot
 import matplotlib
@@ -89,7 +88,9 @@ def main():
         thresholdVals = thresholdSlider.getValues()
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
-        signalplot.show_combined_plot(valuesDict)
+        signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold)
+
+
     button = tk.Button(root, text="Plot Data", command=showPlotPressed)
     button.pack(side=tk.LEFT, pady=10, padx=10)
 
