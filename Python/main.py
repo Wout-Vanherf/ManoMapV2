@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 from tkinter.filedialog import askopenfilename
+from tkinter import messagebox
 from RangeSlider.RangeSlider import RangeSliderH
 
 global file
@@ -92,6 +93,25 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         signalplot.show_combined_plot(valuesDict)
+    
+    def detectEventsPressed():
+        distance = inputtxt.get("1.0", "end-1c")
+        try:
+            distance = int(distance)
+            print(distance)
+        except:
+            messagebox.showinfo("Error", "You can only input a number in the distance field.")
+
+
+    distanceText = tk.StringVar()
+    label = tk.Label(root, textvariable=distanceText)
+    distanceText.set("distance between sensors:")
+    label.pack()
+    inputtxt = tk.Text(root,
+                   height = 1,
+                   width = 10)
+    inputtxt.pack()
+    
     button = tk.Button(root, text="Plot Data", command=showPlotPressed)
     button.pack(side=tk.LEFT, pady=10, padx=10)
 
@@ -99,7 +119,7 @@ def main():
     signalButton.pack(side=tk.LEFT, pady=10, padx=10)
 
 
-    button = tk.Button(root, text="Detect Events")
+    button = tk.Button(root, text="Detect Events", command=detectEventsPressed)
     button.pack(side=tk.LEFT,pady=10, padx=10)
 
     root.mainloop()
