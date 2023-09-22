@@ -11,7 +11,7 @@ global valuesDict
 
 differentialMode = False
 
-#UI
+#UI 🐀
 def main():
     root = tk.Tk()
     root.title("ManoMap Remake")
@@ -25,6 +25,18 @@ def main():
         fileTitle.set(file.title())
     button = tk.Button(root, text="Select Input File", command=openFile)
     button.pack(side=tk.LEFT, pady=10, padx=10)
+
+    options = [
+        "inferno",
+        "hot",
+        "Greys",
+    ]
+
+    clicked = tk.StringVar()
+    clicked.set("inferno")
+
+    drop = tk.OptionMenu(root, clicked, *options)
+    drop.pack(side=tk.RIGHT, pady=10, padx=10)
 
     fileLabel = tk.Label(root, textvariable=fileTitle)
     fileTitle.set("No file selected")
@@ -61,7 +73,8 @@ def main():
         thresholdVals = thresholdSlider.getValues()
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
-        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap='Greys')
+        colormap = clicked.get()
+        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap=colormap)
 
     def showSignalsPressed():
         slidervals = sensorSlider.getValues()
@@ -70,7 +83,8 @@ def main():
         thresholdVals = thresholdSlider.getValues()
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
-        signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold)
+        colormap = clicked.get()
+        signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
 
     def detectEventsPressed():
         distance = inputtxt.get("1.0", "end-1c")
@@ -102,6 +116,17 @@ def main():
 
     root.mainloop()
 
+
+"""
+🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀
+🐀             CRAZY?               🐀
+🐀     ...I WAS CRAZY ONCE...       🐀
+🐀  ...THEY LOCKED ME IN A ROOM...  🐀
+🐀      ...A RUBBER ROOM...         🐀
+🐀  ...A RUBBER ROOM WITH RATS...   🐀
+🐀   ...AND RATS MAKE ME CRAZY!!!!  🐀
+🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀
+"""
 if __name__ == '__main__':
     main()
 

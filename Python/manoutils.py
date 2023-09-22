@@ -40,7 +40,7 @@ def average(arr):
 
 def smooth_row(arr, filter_length):
     out = []
-    for i in range(len(arr)-1):
+    for i in range(len(arr)):
         lowerBound = max(0, i-filter_length)
         upperBound = min(len(arr)-1, i+filter_length)
         out.append(average(arr[lowerBound:upperBound]))
@@ -52,9 +52,8 @@ def smooth_ndArray(ndarr, filterLength):
         out.append(smooth_row(row, filterLength))
     return np.array(out)
 
-#zet een dictionary om naar een 2D Numpy Array (gebruikt om te plotten, row 1 = sensor 1 etc...)
+#zet een dictionary om naar een 2D Numpy Array (gebruikt om te plotten, row 1 = sensor 1 etc...) 🐀
 def dictionary_to_ndarray(data_dict):
     values = list(data_dict.values())
     nd_array = np.stack(values)
     return nd_array.transpose()
-
