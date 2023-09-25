@@ -1,13 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import manoutils
 
 
-def inferno_color(value):
-    inferno_cmap = plt.get_cmap("inferno")
-    color = inferno_cmap(value)
-    return (color[0],color[1],color[2],0.8)
 
-def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold):
+
+def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold, smoothing_strength=1, opacity=1, colormap='inferno'):
 
     data = valuesDict
 
@@ -23,11 +21,18 @@ def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxT
 
         #y_values = [values[x]* scaling_factor + y_offset for values in data.values()]
         y_values = [
-            0 + y_offset if value[x] < minThreshold else value[x] * scaling_factor + y_offset
+            0 + y_offset if value[x] < minThreshold else (value[x] - minThreshold) * scaling_factor + y_offset
             for value in data.values()
         ]
 
-        plt.plot(x_values, y_values, label='sensor ' + str(x), linewidth=0.5, color= inferno_color(laatste_kleur))
+        if smoothing_strength > 1:
+            y_values = manoutils.smooth_row(y_values, smoothing_strength)
+
+        graphColor = plt.get_cmap(colormap)(laatste_kleur)
+        graphColor = (graphColor[0],graphColor[1],graphColor[2], opacity)
+        if colormap == "Greys":
+            graphColor=(0.3,0.3,0.3, opacity)
+        plt.plot(x_values, y_values, label='sensor ' + str(x), linewidth=0.5, color= graphColor)
         y_offset -= 5  # Increment Y offset for the next sensor
         laatste_kleur+= 1/(amount_of_sensors + 30)
 
@@ -46,7 +51,6 @@ def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxT
     plt.xlim(0, x_values[-1])  # Set the x-axis limits
 
     plt.gca().set_aspect('auto', adjustable='box')
-    #plt.legend()  # Add a legend to distinguish the sensors
 
     plt.show()
 
