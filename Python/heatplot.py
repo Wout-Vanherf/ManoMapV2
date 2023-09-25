@@ -6,11 +6,27 @@ import manoutils
 #Toont plot in matplotlib nieuwe window. Kan naar externe module gerefactord worden
 def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap='inferno', smoothing_strength = 1):
     matplotlib.pyplot.close('all')
-    p = manoutils.dictionary_to_ndarray(valuesDict)
+    #only shows values between first and last sensor ADDS AN EMPTY LINE BEFORE DATA
+    p = manoutils.dictionary_to_ndarray(valuesDict)[firstSensor:lastSensor+1]
+    l = np.array([[0 for el in p[1]]])
+    p = np.vstack((l, p))
 
     minT = minThreshold
     maxT = maxThreshold
     cmap = colormap
+
+    #maak een nieuwe dict met enkel data tussen sensors
+#    linecount = 1
+ #   newdict = manoutils.dictionary_to_ndarray([[]])
+  #  for line in valuesDict:
+   #     if linecount < firstSensor or linecount > lastSensor:
+    #        continue
+     #   else:
+      #      print(line.values)
+       #     newdict = np.vstack(newdict, line.values)
+        #linecount += 1
+
+
     #te veel performance loss
 
     if smoothing_strength > 1:
@@ -23,7 +39,7 @@ def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMo
         cmap = 'coolwarm'
         p = manoutils.calculate_differences(p)
     tmp = plt.imshow(p, cmap=cmap, interpolation='none', aspect='auto', vmin=minT, vmax=maxT)
-    plt.yticks(np.arange(firstSensor, lastSensor + 1, 2))
+    plt.yticks(np.arange(firstSensor, lastSensor +1, 1))
     plt.axis([0, len(list(valuesDict)), lastSensor, firstSensor])
     cb = plt.colorbar(tmp)
     plt.show()
