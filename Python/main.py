@@ -14,7 +14,12 @@ differentialMode = False
 
 #UI 🐀
 def main():
-
+    #normal/filtered vs median filtering vragen
+    #tijd filter eventueel
+    #color values
+    #detect events
+    #tijdstippen toevoegen
+    #darmsecties indelen
     # functions and methods
 
     def openFile():
@@ -24,34 +29,10 @@ def main():
         file = askopenfilename()
         valuesDict = manoutils.CSVToDict(file)
         fileTitle.set(file.title())
-    button = tk.Button(root, text="Select Input File", command=openFile)
-    button.pack(side=tk.LEFT, pady=10, padx=10)
-
-    options = [
-        "inferno",
-        "hot",
-        "Greys",
-    ]
-
-    clicked = tk.StringVar()
-    clicked.set("inferno")
-
-    drop = tk.OptionMenu(root, clicked, *options)
-    drop.pack(side=tk.RIGHT, pady=10, padx=10)
-
-    fileLabel = tk.Label(root, textvariable=fileTitle)
-    fileTitle.set("No file selected")
-    fileLabel.pack()
-    #normal/filtered vs median filtering vragen
-    #tijd filter eventueel
-    #color values
-    #detect events
-    #tijdstippen toevoegen
-    #darmsecties indelen
 
     # Buttons for plotting and detecting
     def showPlotPressed():
-        slidervals = sensorSlider.getValues()
+        slidervals = visibleSensorSlider.getValues()
         first_sensor = int(slidervals[0])
         last_sensor = int(slidervals[1])
         thresholdVals = thresholdSlider.getValues()
@@ -61,13 +42,14 @@ def main():
         heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap=colormap)
 
     def showSignalsPressed():
-        slidervals = sensorSlider.getValues()
+        slidervals = visibleSensorSlider.getValues()
         first_sensor = int(slidervals[0])
         last_sensor = int(slidervals[1])
         thresholdVals = thresholdSlider.getValues()
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
+        print(first_sensor, " ", last_sensor)
         signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
 
     def detectEventsPressed():
@@ -125,9 +107,8 @@ def main():
 
     hVar1 = tk.DoubleVar(value=1)
     hVar2 = tk.DoubleVar(value=40)
-
-    sensorSlider = RangeSliderH(sensors_frame, [hVar1, hVar2], Width=400, Height=65, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-    sensorSlider.pack()
+    visibleSensorSlider = RangeSliderH(sensors_frame, [hVar1, hVar2], Width=400, Height=65, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    visibleSensorSlider.pack()
 
     distanceText = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=distanceText)
@@ -148,8 +129,8 @@ def main():
     label.pack()
     ascendingMin = tk.DoubleVar(value=1)
     ascendingMax = tk.DoubleVar(value=20)
-    sensorSlider = RangeSliderH(sensors_frame, [ascendingMin, ascendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-    sensorSlider.pack()
+    ascendingSensorSlider = RangeSliderH(sensors_frame, [ascendingMin, ascendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    ascendingSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
@@ -157,8 +138,8 @@ def main():
     label.pack()
     transverseMin = tk.DoubleVar(value=1)
     transverseMax = tk.DoubleVar(value=40)
-    sensorSlider = RangeSliderH(sensors_frame, [transverseMin, transverseMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-    sensorSlider.pack()
+    transverseSensorSlider = RangeSliderH(sensors_frame, [transverseMin, transverseMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    transverseSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
@@ -166,8 +147,8 @@ def main():
     label.pack()
     descendingMin = tk.DoubleVar(value=1)
     descendingMax = tk.DoubleVar(value=40)
-    sensorSlider = RangeSliderH(sensors_frame, [descendingMin, descendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-    sensorSlider.pack()
+    descendingSensorSlider = RangeSliderH(sensors_frame, [descendingMin, descendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    descendingSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
@@ -175,8 +156,8 @@ def main():
     label.pack()
     sigmoidMin = tk.DoubleVar(value=1)
     sigmoidMax = tk.DoubleVar(value=40)
-    sensorSlider = RangeSliderH(sensors_frame, [sigmoidMin, sigmoidMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-    sensorSlider.pack()
+    sigmoidSensorSlider = RangeSliderH(sensors_frame, [sigmoidMin, sigmoidMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    sigmoidSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
@@ -184,8 +165,8 @@ def main():
     label.pack()
     rectumMin = tk.DoubleVar(value=1)
     rectumMax = tk.DoubleVar(value=40)
-    sensorSlider = RangeSliderH(sensors_frame, [rectumMin, rectumMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-    sensorSlider.pack()
+    rectumSensorSlider = RangeSliderH(sensors_frame, [rectumMin, rectumMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    rectumSensorSlider.pack()
 
 
     # settings frame
@@ -225,6 +206,18 @@ def main():
 
     placeCommentButton = tk.Button(settings_frame, text="Place Comment", command=placeComment)
     placeCommentButton.pack(pady=10, padx=10)
+
+    options = [
+        "inferno",
+        "hot",
+        "Greys",
+    ]
+
+    clicked = tk.StringVar()
+    clicked.set("inferno")
+
+    drop = tk.OptionMenu(settings_frame, clicked, *options)
+    drop.pack(pady=10, padx=10)
 
 
     # data frame
