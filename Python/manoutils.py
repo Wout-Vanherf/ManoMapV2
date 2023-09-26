@@ -16,7 +16,10 @@ def CSVToDict(file):
                 continue
             rowToAdd = []
             for val in row[1:]:
-                currentVal = int(val.strip().replace(',', ''))
+                try:
+                    currentVal = int(val.strip().replace(',', ''))
+                except:
+                    currentVal = float(val.strip().replace(',', ''))
                 rowToAdd.append(currentVal)
             out[rownumber] = rowToAdd
     return out
