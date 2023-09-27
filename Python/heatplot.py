@@ -17,21 +17,6 @@ def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMo
 
     for entry in commentsDict:
         plt.annotate(commentsDict[entry], xy=(entry, firstSensor), xytext=(entry + 1, firstSensor),color='black')
-    
-
-    #maak een nieuwe dict met enkel data tussen sensors
-#    linecount = 1
- #   newdict = manoutils.dictionary_to_ndarray([[]])
-  #  for line in valuesDict:
-   #     if linecount < firstSensor or linecount > lastSensor:
-    #        continue
-     #   else:
-      #      print(line.values)
-       #     newdict = np.vstack(newdict, line.values)
-        #linecount += 1
-
-
-    #te veel performance loss
 
     if smoothing_strength > 1:
         manoutils.smooth_ndArray(p, 5)
@@ -45,5 +30,5 @@ def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMo
     tmp = plt.imshow(p, cmap=cmap, interpolation='none', aspect='auto', vmin=minT, vmax=maxT)
     plt.yticks(np.arange(firstSensor, lastSensor +1, 1))
     plt.axis([0, len(list(valuesDict)), lastSensor, firstSensor])
-    cb = plt.colorbar(tmp)
+    plt.colorbar(tmp)
     plt.show()
