@@ -1,4 +1,6 @@
 import tkinter as tk
+import threading
+import time
 from tkinter.filedialog import askopenfilename
 from tkinter import messagebox
 from RangeSlider.RangeSlider import RangeSliderH
@@ -13,6 +15,7 @@ global valuesDict
 differentialMode = False
 
 #UI 🐀
+
 def main():
     #normal/filtered vs median filtering vragen
     #tijd filter eventueel
@@ -21,7 +24,6 @@ def main():
     #tijdstippen toevoegen
     #darmsecties indelen
     # functions and methods
-
     def openFile():
         global file
         global valuesDict
@@ -49,14 +51,12 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
-        print(first_sensor, " ", last_sensor)
         signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
 
     def detectEventsPressed():
         distance = inputtxt.get("1.0", "end-1c")
         try:
             distance = int(distance)
-            print(distance)
         except ValueError:
             messagebox.showinfo("Error", "You can only input a number in the distance field.")
     def ExportFindings():
@@ -87,7 +87,6 @@ def main():
 
 
     #filename frame
-
     fileTitle = tk.StringVar()
 
     fileLabel = tk.Label(fileName_frame, textvariable=fileTitle)
@@ -123,51 +122,63 @@ def main():
     colonRegionsText.set("ColonRegions: ")
     label.pack()
 
+    ascendingMin = tk.DoubleVar(value=1)
+    ascendingMax = tk.DoubleVar(value=10)
+    transverseMin = tk.DoubleVar(value=11)
+    transverseMax = tk.DoubleVar(value=20)
+    descendingMin = tk.DoubleVar(value=21)
+    descendingMax = tk.DoubleVar(value=30)
+    sigmoidMin = tk.DoubleVar(value=31)
+    sigmoidMax = tk.DoubleVar(value=37)
+    rectumMin = tk.DoubleVar(value=38)
+    rectumMax = tk.DoubleVar(value=40)
+
+
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Ascending:")
     label.pack()
-    ascendingMin = tk.DoubleVar(value=1)
-    ascendingMax = tk.DoubleVar(value=20)
-    ascendingSensorSlider = RangeSliderH(sensors_frame, [ascendingMin, ascendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    ascendingSensorSlider = RangeSliderH(sensors_frame, [ascendingMin, ascendingMax], Width=400, Height=55, padX=15,
+                                         min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
+                                         digit_precision='.0f')
     ascendingSensorSlider.pack()
+
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Transverse:")
     label.pack()
-    transverseMin = tk.DoubleVar(value=1)
-    transverseMax = tk.DoubleVar(value=40)
-    transverseSensorSlider = RangeSliderH(sensors_frame, [transverseMin, transverseMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    transverseSensorSlider = RangeSliderH(sensors_frame, [transverseMin, transverseMax], Width=400, Height=55, padX=15,
+                                          min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
+                                          digit_precision='.0f')
     transverseSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Descending:")
     label.pack()
-    descendingMin = tk.DoubleVar(value=1)
-    descendingMax = tk.DoubleVar(value=40)
-    descendingSensorSlider = RangeSliderH(sensors_frame, [descendingMin, descendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    descendingSensorSlider = RangeSliderH(sensors_frame, [descendingMin, descendingMax], Width=400, Height=55, padX=15,
+                                          min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
+                                          digit_precision='.0f')
     descendingSensorSlider.pack()
+
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Sigmoid:")
     label.pack()
-    sigmoidMin = tk.DoubleVar(value=1)
-    sigmoidMax = tk.DoubleVar(value=40)
-    sigmoidSensorSlider = RangeSliderH(sensors_frame, [sigmoidMin, sigmoidMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    sigmoidSensorSlider = RangeSliderH(sensors_frame, [sigmoidMin, sigmoidMax], Width=400, Height=55, padX=15,
+                                       min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
+                                       digit_precision='.0f')
     sigmoidSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Rectum:")
     label.pack()
-    rectumMin = tk.DoubleVar(value=1)
-    rectumMax = tk.DoubleVar(value=40)
-    rectumSensorSlider = RangeSliderH(sensors_frame, [rectumMin, rectumMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    rectumSensorSlider = RangeSliderH(sensors_frame, [rectumMin, rectumMax], Width=400, Height=55, padX=15, min_val=1,
+                                      max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
     rectumSensorSlider.pack()
-
 
     # settings frame
     settings_title = tk.StringVar()
@@ -179,6 +190,67 @@ def main():
     label = tk.Label(settings_frame, textvariable=thresholdText)
     thresholdText.set("Thresholds:")
     label.pack()
+
+
+    def forceSlider(name):
+        if name == "ascending":
+            ascendingSensorSlider.forceValues([ascendingMin.get(), ascendingMax.get()])
+            return
+        if name == "transverse":
+            transverseSensorSlider.forceValues([transverseMin.get(), transverseMax.get()])
+            return
+        if name == "descending":
+            descendingSensorSlider.forceValues([descendingMin.get(), descendingMax.get()])
+            return
+        if name == "sigmoid":
+            sigmoidSensorSlider.forceValues([sigmoidMin.get(), sigmoidMax.get()])
+            return
+        if name == "rectum":
+            rectumSensorSlider.forceValues([rectumMin.get(), rectumMax.get()])
+            return
+        raise NameError("Not a valid name for a colon region")
+
+    def adjustSlider(i):
+        if i == 0 or i == 9:
+            return
+        doublevars = [ascendingMin, ascendingMax, transverseMin, transverseMax, descendingMin, descendingMax,
+                      sigmoidMin, sigmoidMax, rectumMin, rectumMax]
+        if i % 2 == 0:
+            doublevars[i-1].set(doublevars[i].get() - 1)
+        else:
+            if i < 9:
+                doublevars[i+1].set(doublevars[i].get() + 1)
+        if i < 2:
+            forceSlider("ascending")
+            return
+        if i < 4:
+            forceSlider("transverse")
+            return
+        if i < 6:
+            forceSlider("descending")
+            return
+        if i < 8:
+            forceSlider("sigmoid")
+            return
+        if i < 10:
+            forceSlider("rectum")
+            return
+
+    def adjustSliderWrapper(index):
+        def out(a,b,c):
+            adjustSlider(index)
+        return out
+
+    ascendingMin.trace("w", adjustSliderWrapper(0))
+    ascendingMax.trace("w", adjustSliderWrapper(1))
+    transverseMin.trace("w", adjustSliderWrapper(2))
+    transverseMax.trace("w", adjustSliderWrapper(3))
+    descendingMin.trace("w", adjustSliderWrapper(4))
+    descendingMax.trace("w", adjustSliderWrapper(5))
+    sigmoidMin.trace("w", adjustSliderWrapper(6))
+    sigmoidMax.trace("w", adjustSliderWrapper(7))
+    rectumMin.trace("w", adjustSliderWrapper(8))
+    rectumMax.trace("w", adjustSliderWrapper(9))
 
     hVar3 = tk.DoubleVar(value=10)
     hVar4 = tk.DoubleVar(value=200)
@@ -244,7 +316,6 @@ def main():
     exportButton.pack(pady=10, padx=10)
 
     root.mainloop()
-
 
 """
 🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀
