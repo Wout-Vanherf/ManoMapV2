@@ -60,3 +60,31 @@ def dictionary_to_ndarray(data_dict):
     values = list(data_dict.values())
     nd_array = np.stack(values)
     return nd_array.transpose()
+
+# valideer time fields
+def validateTime(input):
+    try:
+        parts = input.split(":")
+    except:
+        return False
+    if len(parts) != 3:
+        return False
+    try:
+        hours, minutes, seconds = map(int, parts)
+        if 0 <= hours <= 23 and 0 <= minutes <= 59 and 0 <= seconds <= 59:
+            return True
+    except ValueError:
+        pass
+    return False
+
+#convert HH:MM:SS naar  x deciseconden
+def convertTime(input):
+    parts = input.split(":")
+    total = 0
+    try:
+        total = int(parts[0])*60
+        total = (total + int(parts[1])) * 60
+        total = (total + int(parts[2])) * 10
+    except:
+        print("fout in omzetten")
+    return total
