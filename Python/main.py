@@ -11,6 +11,8 @@ import signalplot
 
 global file
 global valuesDict
+global commentsDict
+commentsDict = dict()
 
 differentialMode = False
 
@@ -27,6 +29,8 @@ def main():
     def openFile():
         global file
         global valuesDict
+        global commentsDict
+        commentsDict = dict()
         fileTitle.set("Loading file...")
         file = askopenfilename()
         valuesDict = manoutils.CSVToDict(file)
@@ -34,6 +38,7 @@ def main():
 
     # Buttons for plotting and detecting
     def showPlotPressed():
+        global commentsDict
         slidervals = visibleSensorSlider.getValues()
         first_sensor = int(slidervals[0])
         last_sensor = int(slidervals[1])
@@ -41,7 +46,7 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
-        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap=colormap)
+        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
 
     def showSignalsPressed():
         slidervals = visibleSensorSlider.getValues()
@@ -63,7 +68,14 @@ def main():
         print("nog niet geimplementeerd.")
 
     def placeComment():
-        print("nog niet geimplementeerd.")
+        global commentsDict
+        time = timeText.get("1.0", "end-1c")
+        comment = commentText.get("1.0", "end-1c")
+        #print(str(manoutils.validateTime(time))+ " " + time+ " "+ comment)
+        if manoutils.validateTime(time):
+            commentsDict[manoutils.convertTime(time)] = comment
+        else:
+            messagebox.showinfo("Error", "You must enter the right format of time (HH:MM:SS)")
 
     root = tk.Tk()
     root.title("ManoMap Remake")
@@ -138,9 +150,10 @@ def main():
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Ascending:")
     label.pack()
-    ascendingSensorSlider = RangeSliderH(sensors_frame, [ascendingMin, ascendingMax], Width=400, Height=55, padX=15,
-                                         min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
-                                         digit_precision='.0f')
+    ascendingMin = tk.DoubleVar(value=1)
+    ascendingMax = tk.DoubleVar(value=10)
+    ascendingSensorSlider = RangeSliderH(sensors_frame, [ascendingMin, ascendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+
     ascendingSensorSlider.pack()
 
 
@@ -148,18 +161,21 @@ def main():
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Transverse:")
     label.pack()
-    transverseSensorSlider = RangeSliderH(sensors_frame, [transverseMin, transverseMax], Width=400, Height=55, padX=15,
-                                          min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
-                                          digit_precision='.0f')
+    transverseMin = tk.DoubleVar(value=11)
+    transverseMax = tk.DoubleVar(value=20)
+    transverseSensorSlider = RangeSliderH(sensors_frame, [transverseMin, transverseMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+
     transverseSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Descending:")
     label.pack()
-    descendingSensorSlider = RangeSliderH(sensors_frame, [descendingMin, descendingMax], Width=400, Height=55, padX=15,
-                                          min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
-                                          digit_precision='.0f')
+
+    descendingMin = tk.DoubleVar(value=21)
+    descendingMax = tk.DoubleVar(value=30)
+    descendingSensorSlider = RangeSliderH(sensors_frame, [descendingMin, descendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+
     descendingSensorSlider.pack()
 
 
@@ -167,17 +183,20 @@ def main():
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Sigmoid:")
     label.pack()
-    sigmoidSensorSlider = RangeSliderH(sensors_frame, [sigmoidMin, sigmoidMax], Width=400, Height=55, padX=15,
-                                       min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5,
-                                       digit_precision='.0f')
+    sigmoidMin = tk.DoubleVar(value=31)
+    sigmoidMax = tk.DoubleVar(value=35)
+    sigmoidSensorSlider = RangeSliderH(sensors_frame, [sigmoidMin, sigmoidMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+
     sigmoidSensorSlider.pack()
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Rectum:")
     label.pack()
-    rectumSensorSlider = RangeSliderH(sensors_frame, [rectumMin, rectumMax], Width=400, Height=55, padX=15, min_val=1,
-                                      max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+    rectumMin = tk.DoubleVar(value=36)
+    rectumMax = tk.DoubleVar(value=40)
+    rectumSensorSlider = RangeSliderH(sensors_frame, [rectumMin, rectumMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
+
     rectumSensorSlider.pack()
 
     # settings frame
@@ -190,7 +209,6 @@ def main():
     label = tk.Label(settings_frame, textvariable=thresholdText)
     thresholdText.set("Thresholds:")
     label.pack()
-
 
     def forceSlider(name):
         if name == "ascending":
