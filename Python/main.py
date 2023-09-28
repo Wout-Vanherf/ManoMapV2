@@ -9,6 +9,8 @@ import signalplot
 
 global file
 global valuesDict
+global commentsDict
+commentsDict = dict()
 
 differentialMode = False
 
@@ -25,6 +27,8 @@ def main():
     def openFile():
         global file
         global valuesDict
+        global commentsDict
+        commentsDict = dict()
         fileTitle.set("Loading file...")
         file = askopenfilename()
         valuesDict = manoutils.CSVToDict(file)
@@ -32,6 +36,7 @@ def main():
 
     # Buttons for plotting and detecting
     def showPlotPressed():
+        global commentsDict
         slidervals = visibleSensorSlider.getValues()
         first_sensor = int(slidervals[0])
         last_sensor = int(slidervals[1])
@@ -39,7 +44,7 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
-        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, colormap=colormap)
+        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
 
     def showSignalsPressed():
         slidervals = visibleSensorSlider.getValues()
@@ -63,7 +68,14 @@ def main():
         print("nog niet geimplementeerd.")
 
     def placeComment():
-        print("nog niet geimplementeerd.")
+        global commentsDict
+        time = timeText.get("1.0", "end-1c")
+        comment = commentText.get("1.0", "end-1c")
+        #print(str(manoutils.validateTime(time))+ " " + time+ " "+ comment)
+        if manoutils.validateTime(time):
+            commentsDict[manoutils.convertTime(time)] = comment
+        else:
+            messagebox.showinfo("Error", "You must enter the right format of time (HH:MM:SS)")
 
     root = tk.Tk()
     root.title("ManoMap Remake")
@@ -179,6 +191,66 @@ def main():
     label = tk.Label(settings_frame, textvariable=thresholdText)
     thresholdText.set("Thresholds:")
     label.pack()
+
+    def forceSlider(name):
+        if name == "ascending":
+            ascendingSensorSlider.forceValues([ascendingMin.get(), ascendingMax.get()])
+            return
+        if name == "transverse":
+            transverseSensorSlider.forceValues([transverseMin.get(), transverseMax.get()])
+            return
+        if name == "descending":
+            descendingSensorSlider.forceValues([descendingMin.get(), descendingMax.get()])
+            return
+        if name == "sigmoid":
+            sigmoidSensorSlider.forceValues([sigmoidMin.get(), sigmoidMax.get()])
+            return
+        if name == "rectum":
+            rectumSensorSlider.forceValues([rectumMin.get(), rectumMax.get()])
+            return
+        raise NameError("Not a valid name for a colon region")
+
+    def adjustSlider(i):
+        if i == 0 or i == 9:
+            return
+        doublevars = [ascendingMin, ascendingMax, transverseMin, transverseMax, descendingMin, descendingMax,
+                      sigmoidMin, sigmoidMax, rectumMin, rectumMax]
+        if i % 2 == 0:
+            doublevars[i-1].set(doublevars[i].get() - 1)
+        else:
+            if i < 9:
+                doublevars[i+1].set(doublevars[i].get() + 1)
+        if i < 2:
+            forceSlider("ascending")
+            return
+        if i < 4:
+            forceSlider("transverse")
+            return
+        if i < 6:
+            forceSlider("descending")
+            return
+        if i < 8:
+            forceSlider("sigmoid")
+            return
+        if i < 10:
+            forceSlider("rectum")
+            return
+
+    def adjustSliderWrapper(index):
+        def out(a,b,c):
+            adjustSlider(index)
+        return out
+
+    ascendingMin.trace("w", adjustSliderWrapper(0))
+    ascendingMax.trace("w", adjustSliderWrapper(1))
+    transverseMin.trace("w", adjustSliderWrapper(2))
+    transverseMax.trace("w", adjustSliderWrapper(3))
+    descendingMin.trace("w", adjustSliderWrapper(4))
+    descendingMax.trace("w", adjustSliderWrapper(5))
+    sigmoidMin.trace("w", adjustSliderWrapper(6))
+    sigmoidMax.trace("w", adjustSliderWrapper(7))
+    rectumMin.trace("w", adjustSliderWrapper(8))
+    rectumMax.trace("w", adjustSliderWrapper(9))
 
     hVar3 = tk.DoubleVar(value=10)
     hVar4 = tk.DoubleVar(value=200)

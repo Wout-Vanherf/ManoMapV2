@@ -11,22 +11,28 @@ def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxT
 
     x_values = list(data.keys())
     amount_of_sensors = last_sensor - first_sensor + 1
-    y_offset = 100  # Starting Y value for the first sensor
+    y_offset = 100
 
-    # Create a single subplot
-    plt.figure().set_figheight(10.0)  # Adjust figure height to fit all sensors
+    plt.figure().set_figheight(10.0)
     laatste_kleur =0.1
     for x in range(amount_of_sensors):
-        scaling_factor = 0.1 #compression of the values on the y scale to make them more compact
+        scaling_factor = 0.1
 
-        #y_values = [values[x]* scaling_factor + y_offset for values in data.values()]
+        #Eigenlijk zou het zo moeten doen maar dit macheert nog nie, zoda we de filter kunnen doen voordat we de threshold applyen, anders zitten we tereug met negatieve waarden.
+        y_values = [(value[x] - minThreshold) * scaling_factor + y_offset for value in data.values()]
+        for i, val in enumerate(y_values):
+            if val < minThreshold:
+                y_values[i] = y_offset
+
+
         y_values = [
-            0 + y_offset if value[x] < minThreshold else (value[x] - minThreshold) * scaling_factor + y_offset
+            y_offset if value[x] < minThreshold else (value[x] - minThreshold) * scaling_factor + y_offset
             for value in data.values()
         ]
 
         if smoothing_strength > 1:
             y_values = manoutils.smooth_row(y_values, smoothing_strength)
+
 
         graphColor = plt.get_cmap(colormap)(laatste_kleur)
         graphColor = (graphColor[0],graphColor[1],graphColor[2], opacity)

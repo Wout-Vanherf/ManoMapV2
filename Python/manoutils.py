@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+from scipy.signal import savgol_filter
 
 #Functie die CSV (of txt mits juiste syntax) file path input neemt en een dictionary returnt. Timestamps zijn keys.
 
@@ -88,3 +89,13 @@ def convertTime(input):
     except:
         print("fout in omzetten")
     return total
+
+def savgol_smooth(data, window_size, po=1):
+    return savgol_filter(data, window_length=window_size, polyorder=po)
+
+def savgol_smooth_ndArray(arr, window_size, po=1):
+    out = []
+    for row in arr:
+        val = savgol_smooth(row, window_size, po)
+        out.append(val)
+    return np.array(out)
