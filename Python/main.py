@@ -33,6 +33,11 @@ def main():
         file = askopenfilename()
         valuesDict = manoutils.CSVToDict(file)
         fileTitle.set(file.title())
+    
+    # clear comments
+    def deleteComments():
+        global commentsDict
+        commentsDict = dict()
 
     # Buttons for plotting and detecting
     def showPlotPressed():
@@ -47,6 +52,7 @@ def main():
         heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
 
     def showSignalsPressed():
+        global commentsDict
         slidervals = visibleSensorSlider.getValues()
         first_sensor = int(slidervals[0])
         last_sensor = int(slidervals[1])
@@ -54,16 +60,14 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
-        print(first_sensor, " ", last_sensor)
-        signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
+        signalplot.show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
 
     def detectEventsPressed():
         distance = inputtxt.get("1.0", "end-1c")
         try:
             distance = int(distance)
-            print(distance)
         except ValueError:
-            messagebox.showinfo("Error", "You can only input a number in the distance field.")
+            messagebox.showinfo("Error", "You have to input a number in the distance field.")
     def ExportFindings():
         print("nog niet geimplementeerd.")
 
@@ -71,11 +75,12 @@ def main():
         global commentsDict
         time = timeText.get("1.0", "end-1c")
         comment = commentText.get("1.0", "end-1c")
-        #print(str(manoutils.validateTime(time))+ " " + time+ " "+ comment)
         if manoutils.validateTime(time):
             commentsDict[manoutils.convertTime(time)] = comment
         else:
             messagebox.showinfo("Error", "You must enter the right format of time (HH:MM:SS)")
+        timeText.delete("1.0", "end")
+        commentText.delete("1.0", "end")
 
     root = tk.Tk()
     root.title("ManoMap Remake")

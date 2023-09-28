@@ -16,7 +16,7 @@ def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMo
     cmap = colormap
 
     for entry in commentsDict:
-        plt.annotate(commentsDict[entry], xy=(entry, firstSensor), xytext=(entry + 1, firstSensor),color='black')
+        plt.annotate(commentsDict[entry], xy=(entry, firstSensor), xytext=(entry + 1, firstSensor -1),color='black')
     
 
     #maak een nieuwe dict met enkel data tussen sensors
