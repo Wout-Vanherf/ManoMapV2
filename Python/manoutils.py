@@ -2,7 +2,7 @@ import csv
 import numpy as np
 from scipy.signal import savgol_filter
 
-granularity_factor = 10
+granularity_factor = 100
 
 def get_granularity_factor():
     return granularity_factor
