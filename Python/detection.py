@@ -26,19 +26,15 @@ ax.grid(True)
 
 def plot_values(arr):
     x_values = [(0 + i*0.1) for i, el in enumerate(arr)]
+
+def plot_values(arr):
+    x_values = [(0 + i*0.1) for i,el in enumerate(arr)]
     y_values = arr
 
     xmin = min(x_values)
     xmax = max(x_values)
     ax.set_xlim(xmin-0.5, xmax+0.5)
 
-    ymin = min(y_values)
-    ymax = max(y_values)
-    ax.set_ylim(ymin-0.5, ymax+0.5)
-
-    print(x_values, y_values)
-    line_real.set_data(x_values, y_values)
-    plt.show()
 
 
 def make_it_real(arr):
@@ -46,7 +42,6 @@ def make_it_real(arr):
     for el in arr:
         out.append(float(el))
     return out
-
 
 def update(frame):
     global freq
@@ -57,9 +52,6 @@ def update(frame):
     line_real.set_data(t, np.real(morlet_wavelet))
     return line_real
 
-
-# ani = FuncAnimation(fig, update, frames=10, interval=2, blit=True)
-# plt.show()
 def transpose_matrix(m):
     out_untransfomed = list(zip(*m))
     out = []
@@ -72,7 +64,7 @@ exampledata = {1: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
                2: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
                3: [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
                4: [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-               5: [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+               5: [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
                6: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
                7: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
                8: [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
@@ -151,3 +143,5 @@ def find_pattern(data_dict, threshold, amount_of_sensors=3, amount_overlapped=2)
     return result
 
 matrix_print(find_pattern(exampledata, 1, amount_overlapped=3))
+
+

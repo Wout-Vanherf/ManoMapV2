@@ -30,5 +30,5 @@ def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMo
     tmp = plt.imshow(p, cmap=cmap, interpolation='none', aspect='auto', vmin=minT, vmax=maxT)
     plt.yticks(np.arange(firstSensor, lastSensor +1, 1))
     plt.axis([0, len(list(valuesDict)), lastSensor, firstSensor])
-    plt.colorbar(tmp)
+    cb = plt.colorbar(tmp)
     plt.show()

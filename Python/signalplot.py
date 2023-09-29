@@ -5,7 +5,7 @@ import manoutils
 
 
 
-def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold, smoothing_strength=1, opacity=1, colormap='inferno'):
+def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, smoothing_strength=1, opacity=1, colormap='inferno'):
 
     data = valuesDict
 
@@ -57,6 +57,10 @@ def show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxT
     plt.xlim(0, x_values[-1])  # Set the x-axis limits
 
     plt.gca().set_aspect('auto', adjustable='box')
+
+    for entry in commentsDict:
+        print(tick_locations[0])
+        plt.annotate(commentsDict[entry], xy=(entry, tick_locations[0]*-5 +140), xytext=(entry + 1, tick_locations[0]*-5 +140),color='black')
 
     plt.show()
 

@@ -1,6 +1,4 @@
 import tkinter as tk
-import threading
-import time
 from tkinter.filedialog import askopenfilename
 from tkinter import messagebox
 from RangeSlider.RangeSlider import RangeSliderH
@@ -17,7 +15,6 @@ commentsDict = dict()
 differentialMode = False
 
 #UI 🐀
-
 def main():
     #normal/filtered vs median filtering vragen
     #tijd filter eventueel
@@ -36,6 +33,11 @@ def main():
         valuesDict = manoutils.CSVToDict(file)
         fileTitle.set(file.title())
 
+    # clear comments
+    def deleteComments():
+        global commentsDict
+        commentsDict = dict()
+
     # Buttons for plotting and detecting
     def showPlotPressed():
         global commentsDict
@@ -49,6 +51,7 @@ def main():
         heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
 
     def showSignalsPressed():
+        global commentsDict
         slidervals = visibleSensorSlider.getValues()
         first_sensor = int(slidervals[0])
         last_sensor = int(slidervals[1])
@@ -56,12 +59,13 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
-        signalplot.show_combined_plot(valuesDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
+        signalplot.show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
 
     def detectEventsPressed():
         distance = inputtxt.get("1.0", "end-1c")
         try:
             distance = int(distance)
+            print(distance)
         except ValueError:
             messagebox.showinfo("Error", "You can only input a number in the distance field.")
     def ExportFindings():
@@ -76,6 +80,8 @@ def main():
             commentsDict[manoutils.convertTime(time)] = comment
         else:
             messagebox.showinfo("Error", "You must enter the right format of time (HH:MM:SS)")
+        timeText.delete("1.0", "end")
+        commentText.delete("1.0", "end")
 
     root = tk.Tk()
     root.title("ManoMap Remake")
@@ -99,6 +105,7 @@ def main():
 
 
     #filename frame
+
     fileTitle = tk.StringVar()
 
     fileLabel = tk.Label(fileName_frame, textvariable=fileTitle)
@@ -134,18 +141,6 @@ def main():
     colonRegionsText.set("ColonRegions: ")
     label.pack()
 
-    ascendingMin = tk.DoubleVar(value=1)
-    ascendingMax = tk.DoubleVar(value=10)
-    transverseMin = tk.DoubleVar(value=11)
-    transverseMax = tk.DoubleVar(value=20)
-    descendingMin = tk.DoubleVar(value=21)
-    descendingMax = tk.DoubleVar(value=30)
-    sigmoidMin = tk.DoubleVar(value=31)
-    sigmoidMax = tk.DoubleVar(value=37)
-    rectumMin = tk.DoubleVar(value=38)
-    rectumMax = tk.DoubleVar(value=40)
-
-
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Ascending:")
@@ -153,9 +148,7 @@ def main():
     ascendingMin = tk.DoubleVar(value=1)
     ascendingMax = tk.DoubleVar(value=10)
     ascendingSensorSlider = RangeSliderH(sensors_frame, [ascendingMin, ascendingMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-
     ascendingSensorSlider.pack()
-
 
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
@@ -164,7 +157,6 @@ def main():
     transverseMin = tk.DoubleVar(value=11)
     transverseMax = tk.DoubleVar(value=20)
     transverseSensorSlider = RangeSliderH(sensors_frame, [transverseMin, transverseMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-
     transverseSensorSlider.pack()
 
     var = tk.StringVar()
@@ -178,7 +170,6 @@ def main():
 
     descendingSensorSlider.pack()
 
-
     var = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=var)
     var.set("Sigmoid:")
@@ -186,7 +177,6 @@ def main():
     sigmoidMin = tk.DoubleVar(value=31)
     sigmoidMax = tk.DoubleVar(value=35)
     sigmoidSensorSlider = RangeSliderH(sensors_frame, [sigmoidMin, sigmoidMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-
     sigmoidSensorSlider.pack()
 
     var = tk.StringVar()
@@ -196,8 +186,8 @@ def main():
     rectumMin = tk.DoubleVar(value=36)
     rectumMax = tk.DoubleVar(value=40)
     rectumSensorSlider = RangeSliderH(sensors_frame, [rectumMin, rectumMax], Width=400, Height=55, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
-
     rectumSensorSlider.pack()
+
 
     # settings frame
     settings_title = tk.StringVar()
@@ -334,6 +324,7 @@ def main():
     exportButton.pack(pady=10, padx=10)
 
     root.mainloop()
+
 
 """
 🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀🐀
