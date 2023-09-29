@@ -2,8 +2,12 @@ import csv
 import numpy as np
 from scipy.signal import savgol_filter
 
-#Functie die CSV (of txt mits juiste syntax) file path input neemt en een dictionary returnt. Timestamps zijn keys.
+granularity_factor = 10
 
+def get_granularity_factor():
+    return granularity_factor
+
+#Functie die CSV (of txt mits juiste syntax) file path input neemt en een dictionary returnt. Timestamps zijn keys.
 def CSVToDict(file):
     out = dict()
     with open(file) as csvfile:
@@ -11,7 +15,7 @@ def CSVToDict(file):
         rownumber = 1
         for row in rdr:
             rownumber+=1
-            if rownumber % 10 != 0:
+            if rownumber % granularity_factor != 0:
                 continue
             if rownumber < 10:
                 continue
