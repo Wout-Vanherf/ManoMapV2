@@ -59,7 +59,7 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
-        signalplot.show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
+        signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
 
     def detectEventsPressed():
         distance = inputtxt.get("1.0", "end-1c")

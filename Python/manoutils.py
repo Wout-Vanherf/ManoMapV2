@@ -1,6 +1,6 @@
 import csv
 import numpy as np
-from scipy.signal import savgol_filter
+from scipy.signal import savgol_filter, wiener
 
 granularity_factor = 10
 
@@ -94,10 +94,10 @@ def convertTime(input):
         print("fout in omzetten")
     return total
 
-def savgol_smooth(data, window_size, po=1):
+def savgol_smooth(data, window_size, po=3):
     return savgol_filter(data, window_length=window_size, polyorder=po)
 
-def savgol_smooth_ndArray(arr, window_size, po=1):
+def savgol_smooth_ndArray(arr, window_size, po=3):
     out = []
     for row in arr:
         val = savgol_smooth(row, window_size, po)
@@ -130,3 +130,67 @@ def transform_dict_per_sensor_to_dict_per_timeframe(dict, timeframe = 0.1):
 
 #time in sec
 
+def baseline_removal(dict, time = 60):
+    #aanpassen als data niet om de 0.1 sec
+    time_between_data = 0.1
+    amount_of_values_for_baseline_removal = round((1/time_between_data)*time)
+    dict_baseline_removal  ={}
+    dict = transform_dict_per_timeframe_to_per_sensor(dict)
+    for key, value in dict.items():
+        min_of_first_values = min(value[:amount_of_values_for_baseline_removal])
+        values_with_baseline_removal = []
+        for x in value:
+            values_with_baseline_removal.append(x-min_of_first_values)
+        dict_baseline_removal[key] = (values_with_baseline_removal)
+
+    return transform_dict_per_sensor_to_dict_per_timeframe(dict_baseline_removal)
+
+def savitzky_Golay_filter_dict(dict, window_length = 5, polyorder = 3):
+    dict = transform_dict_per_timeframe_to_per_sensor(dict)
+    for key, value in dict.items():
+        dict[key] = savgol_filter(value,window_length, polyorder)
+    return transform_dict_per_sensor_to_dict_per_timeframe(dict)
+
+def wiener_filter_dict(dict, window = 5):
+    dict = transform_dict_per_timeframe_to_per_sensor(dict)
+    for key, value in dict.items():
+        dict[key] = wiener(value,window)
+    return transform_dict_per_sensor_to_dict_per_timeframe(dict)
+def data_preperation(dict):
+    baselineRemoved = baseline_removal(dict)
+    savitzky = savitzky_Golay_filter_dict(baselineRemoved)
+    wieners = wiener_filter_dict(savitzky)
+    baselineremoval2 = baseline_removal(wieners)
+    return baselineremoval2
+
+
+exampledata = {0.0: [11, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+               0.1: [11, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+               0.2: [11, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+               0.3: [10, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+               0.4: [11, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
+               0.5: [10, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+               0.6: [11, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+               0.7: [10, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+               0.8: [11, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
+               0.9: [10, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]
+               }
+"""
+for key, value in exampledata.items():
+    print(key,value)
+print("")
+print("baselineremoval")
+for key, value in baseline_removal(exampledata,0.5).items():
+    print(key, value)
+print("")
+print("savitzky Golay filter")
+for key, value in savitzky_Golay_filter_dict(exampledata).items():
+    print(key, value)
+print("")
+print("wiener filter")
+for key, value in wiener_filter_dict(exampledata).items():
+    print(key, value)
+print("datapreperation")
+for key, value in data_preperation(exampledata).items():
+    print(key, value)
+"""
