@@ -165,6 +165,7 @@ def find_contraction_length(pattern_results, pair, length, rowindex):
     try:
         for nextpair in pattern_results[rowindex + 1]:
             if nextpair["matches"] == pair["sensors"]:
+                pattern_results[rowindex].remove(pair)
                 return find_contraction_length(pattern_results, nextpair, length + 1, rowindex + 1)
     except:
         return length + 1
@@ -178,7 +179,8 @@ def find_contractions_from_patterns(pattern_results, contraction_length):
                 print("Found contraction of length", length, "on row", rowindex, "(pair: ", pair,")")
 
 
-filedata = manoutils.CSVToDict("functions/Nalox1_11_07_2018.CSV")
-results = find_patterns_from_values_dict(filedata, 15)
+filedata = manoutils.CSVToDict("functions/Nalox1_18_07_2018.txt")
+filedata = manoutils.data_preperation(filedata)
+results = find_patterns_from_values_dict(filedata, 10,amount_of_sensors=3,amount_overlapped=2)
 
-find_contractions_from_patterns(results, -1)
+find_contractions_from_patterns(results, 5)
