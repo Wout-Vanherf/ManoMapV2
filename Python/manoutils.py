@@ -99,3 +99,30 @@ def savgol_smooth_ndArray(arr, window_size, po=1):
         val = savgol_smooth(row, window_size, po)
         out.append(val)
     return np.array(out)
+
+
+def transform_dict_per_timeframe_to_per_sensor(dict):
+    new_dict = {}
+    list_length = len(next(iter(dict.values())))
+    for i in range(1, list_length + 1):
+        new_key = i
+        new_value = []
+        for key, value in dict.items():
+            new_value.append(value[i - 1])
+            new_dict[new_key] = new_value
+    return new_dict
+
+def transform_dict_per_sensor_to_dict_per_timeframe(dict, timeframe = 0.1):
+    new_dict = {}
+    list_length = len(next(iter(dict.values())))
+    for i in range(1, list_length + 1):
+        #new_key = i * timeframe - timeframe
+        new_key = round(i * timeframe - timeframe, 10)
+        new_value = []
+        for key, value in dict.items():
+            new_value.append(value[i - 1])
+            new_dict[new_key] = new_value
+    return new_dict
+
+#time in sec
+

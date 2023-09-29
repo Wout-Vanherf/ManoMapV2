@@ -18,7 +18,7 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
     for x in range(amount_of_sensors):
         scaling_factor = 0.1
 
-        #Eigenlijk zou het zo moeten doen maar dit macheert nog nie, zoda we de filter kunnen doen voordat we de threshold applyen, anders zitten we tereug met negatieve waarden.
+        #Eigenlijk zou het zo moeten doen maar dit macheert nog nie, zoda we de filter kunnen doen voordat we de threshold applyen, anders zitten we terug met negatieve waarden.
         y_values = [(value[x] - minThreshold) * scaling_factor + y_offset for value in data.values()]
         for i, val in enumerate(y_values):
             if val < minThreshold:
