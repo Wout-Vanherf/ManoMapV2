@@ -88,18 +88,22 @@ def main():
 
     notebook = tk.ttk.Notebook()
     main_tab = tk.ttk.Frame(notebook)
-    notebook.add(main_tab, text = 'home')
+    advanced_settings_tab = tk.ttk.Frame(notebook)
+    notebook.add(main_tab, text = 'Home')
+    notebook.add(advanced_settings_tab, text = 'Advanced Settings')
     # Create  frames
-    filename_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
-    sensors_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
-    settings_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
-    data_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
+    filename_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=10)
+    sensors_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=5)
+    settings_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=5)
+    data_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=5)
+    advanced_settings = tk.ttk.Frame(advanced_settings_tab, relie ="ridge", borderwidth=2)
 
     # Place the frames in the root window
     filename_frame.grid(row=0, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
     sensors_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
     settings_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
     data_frame.grid(row=1, column=2, padx=10, pady=10, sticky="nsew")
+    advanced_settings.grid(row=1, column=1, padx=10,pady=10, sticky="nsew")
 
     # Configure columns to take 30% of screen width each
     root.columnconfigure(0, weight=1)  # 30%
@@ -204,6 +208,7 @@ def main():
     label.pack()
 
     notebook.pack()
+
     def forceSlider(name):
         if name == "ascending":
             ascendingSensorSlider.forceValues([ascendingMin.get(), ascendingMax.get()])
@@ -291,19 +296,6 @@ def main():
     placeCommentButton = tk.Button(settings_frame, text="Place Comment", command=placeComment)
     placeCommentButton.pack(pady=10, padx=10)
 
-    options = [
-        "inferno",
-        "hot",
-        "Greys",
-    ]
-
-    clicked = tk.StringVar()
-    clicked.set("inferno")
-
-    drop = tk.OptionMenu(settings_frame, clicked, *options)
-    drop.pack(pady=10, padx=10)
-
-
     # data frame
     data_title = tk.StringVar()
     label = tk.Label(data_frame, textvariable=data_title, font=("Helvetica", 16, "underline"))
@@ -326,6 +318,26 @@ def main():
 
     exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
+
+
+    #ADVANCED SETTINGS
+    data_title = tk.StringVar()
+    label = tk.Label(advanced_settings, textvariable=data_title, font=("Helvetica", 16, "underline"))
+    data_title.set("Advanced Settings")
+    label.pack()
+
+    options = [
+        "inferno",
+        "hot",
+        "Greys",
+    ]
+
+    clicked = tk.StringVar()
+    clicked.set("inferno")
+
+    drop = tk.OptionMenu(advanced_settings, clicked, *options)
+    drop.pack(pady=10, padx=10)
+
 
     root.mainloop()
 
