@@ -24,8 +24,6 @@ def main():
     #darmsecties indelen
     # functions and methods
     def openFile():
-        global file
-        global valuesDict
         global commentsDict
         if len(commentsDict) > 0:
             global popup
@@ -44,12 +42,14 @@ def main():
             #deleteComments()
             #messagebox.showinfo("Clear comments", "You still have saved comments, do you wish to delete them?")
         else:
-            global valuesDict
-            fileTitle.set("Loading file...")
-            file = askopenfilename()
-            valuesDict = manoutils.CSVToDict(file)
-            fileTitle.set(file.title())
-
+            try:
+                global valuesDict
+                fileTitle.set("Loading file...")
+                file = askopenfilename()
+                valuesDict = manoutils.CSVToDict(file)
+                fileTitle.set(file.title())
+            except:
+                fileTitle.set("NO FILE SELECTED")
     # clear comments
     def deleteComments():
         global commentsDict
@@ -350,13 +350,33 @@ def main():
     exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
 
+    def add_settings_var(root, name, steps=1,minimum=0,maximum=100):
+        tmp_frame = tk.Frame(root, borderwidth=10)
+        tmp_double_var = tk.DoubleVar()
+
+        tmp_title = tk.StringVar()
+        tmp_title.set(name + ":")
+        tmp_label = tk.Label(tmp_frame, textvariable=tmp_title)
+        tmp_scale = tk.Scale(tmp_frame, from_=minimum, to=maximum, resolution=steps, variable=tmp_double_var,orient="horizontal")
+        tmp_entry = tk.Entry(tmp_frame, textvariable=tmp_double_var)
+
+        tmp_label.pack(side="left")
+        tmp_scale.pack(side="bottom")
+        tmp_entry.pack(side="bottom")
+
+        tmp_frame.pack(side="bottom")
+
+        return tmp_double_var
 
     #ADVANCED SETTINGS
-    data_title = tk.StringVar()
+
+
     label = tk.Label(advanced_settings, textvariable=data_title, font=("Helvetica", 16, "underline"))
     data_title.set("Advanced Settings")
+    data_title = tk.StringVar()
     label.pack()
 
+    theme_frame = tk.Frame(advanced_settings, borderwidth=10)
     options = [
         "inferno",
         "hot",
@@ -366,10 +386,15 @@ def main():
     clicked = tk.StringVar()
     clicked.set("inferno")
 
-    drop = tk.OptionMenu(advanced_settings, clicked, *options)
-    drop.pack(pady=10, padx=10)
+    theme_title = tk.StringVar()
+    theme_title.set("Theme:")
+    themelabel = tk.Label(theme_frame, textvariable=theme_title)
+    drop = tk.OptionMenu(theme_frame, clicked, *options)
+    themelabel.pack(pady=10, padx=10,side="left")
+    drop.pack(pady=10, padx=10,side="bottom")
 
-
+    theme_frame.pack(side="bottom")
+    add_settings_var(advanced_settings, "Line Opacity",minimum=0.5, maximum=1,steps=0.01)
     root.mainloop()
 
 
