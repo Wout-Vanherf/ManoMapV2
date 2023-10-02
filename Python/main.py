@@ -27,16 +27,47 @@ def main():
         global file
         global valuesDict
         global commentsDict
-        commentsDict = dict()
-        fileTitle.set("Loading file...")
-        file = askopenfilename()
-        valuesDict = manoutils.CSVToDict(file)
-        fileTitle.set(file.title())
+        if len(commentsDict) > 0:
+            global popup
+            popup = tk.Toplevel(root)
+            popup.title("Delete Comments")
+
+            label = tk.Label(popup, text="You still have comments saved, do you wish to delete them?")
+            label.pack()
+
+            accept_button = tk.Button(popup, text="Delete", command=deleteComments)
+            accept_button.pack()
+
+            deny_button = tk.Button(popup, text="No", command=keepComments)
+            deny_button.pack()
+
+            #deleteComments()
+            #messagebox.showinfo("Clear comments", "You still have saved comments, do you wish to delete them?")
+        else:
+            global valuesDict
+            fileTitle.set("Loading file...")
+            file = askopenfilename()
+            valuesDict = manoutils.CSVToDict(file)
+            fileTitle.set(file.title())
 
     # clear comments
     def deleteComments():
         global commentsDict
         commentsDict = dict()
+        global valuesDict
+        popup.destroy()
+        fileTitle.set("Loading file...")
+        file = askopenfilename()
+        valuesDict = manoutils.CSVToDict(file)
+        fileTitle.set(file.title())
+    
+    def keepComments():
+        global valuesDict
+        popup.destroy()
+        fileTitle.set("Loading file...")
+        file = askopenfilename()
+        valuesDict = manoutils.CSVToDict(file)
+        fileTitle.set(file.title())
 
     # Buttons for plotting and detecting
     def showPlotPressed():
