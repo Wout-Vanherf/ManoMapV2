@@ -6,6 +6,7 @@ from RangeSlider.RangeSlider import RangeSliderH
 import heatplot
 import manoutils
 import signalplot
+import export
 
 global file
 global valuesDict
@@ -39,9 +40,6 @@ def main():
 
             deny_button = tk.Button(popup, text="No", command=keepComments)
             deny_button.pack()
-
-            #deleteComments()
-            #messagebox.showinfo("Clear comments", "You still have saved comments, do you wish to delete them?")
         else:
             try:
                 global valuesDict
@@ -51,6 +49,7 @@ def main():
                 fileTitle.set(file.title())
             except:
                 fileTitle.set("NO FILE SELECTED")
+
     # clear comments
     def deleteComments():
         global commentsDict
@@ -101,7 +100,11 @@ def main():
         except ValueError:
             messagebox.showinfo("Error", "You can only input a number in the distance field.")
     def ExportFindings():
-        print("nog niet geimplementeerd.")
+        print(fileTitle.get())
+        title = str(fileTitle.get()).split('/')[-1]
+        title = title.split('.')[0]
+        print(title)
+        export.createexcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), [])
 
     def placeComment():
         global commentsDict
