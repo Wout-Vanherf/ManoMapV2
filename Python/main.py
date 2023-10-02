@@ -14,6 +14,7 @@ commentsDict = dict()
 
 differentialMode = False
 
+
 #UI 🐀
 def main():
     #normal/filtered vs median filtering vragen
@@ -90,7 +91,7 @@ def main():
         minThreshold = int(thresholdVals[0])
         maxThreshold = int(thresholdVals[1])
         colormap = clicked.get()
-        signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=0.7)
+        signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get())
 
     def detectEventsPressed():
         distance = inputtxt.get("1.0", "end-1c")
@@ -116,6 +117,8 @@ def main():
 
     root = tk.Tk()
     root.title("ManoMap Remake")
+
+    line_opacity = tk.DoubleVar(value=1)
 
     notebook = tk.ttk.Notebook()
     main_tab = tk.ttk.Frame(notebook)
@@ -350,9 +353,9 @@ def main():
     exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
 
-    def add_settings_var(root, name, steps=1,minimum=0,maximum=100):
+    def add_settings_var(root, name, steps=1,minimum=0,maximum=100, val=1):
         tmp_frame = tk.Frame(root, borderwidth=10)
-        tmp_double_var = tk.DoubleVar()
+        tmp_double_var = tk.DoubleVar(value=val)
 
         tmp_title = tk.StringVar()
         tmp_title.set(name + ":")
@@ -394,7 +397,7 @@ def main():
     drop.pack(pady=10, padx=10,side="bottom")
 
     theme_frame.pack(side="bottom")
-    add_settings_var(advanced_settings, "Line Opacity",minimum=0.5, maximum=1,steps=0.01)
+    line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
     root.mainloop()
 
 
