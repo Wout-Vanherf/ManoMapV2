@@ -86,14 +86,17 @@ def main():
     root = tk.Tk()
     root.title("ManoMap Remake")
 
+    notebook = tk.ttk.Notebook()
+    main_tab = tk.ttk.Frame(notebook)
+    notebook.add(main_tab, text = 'home')
     # Create  frames
-    fileName_frame = tk.Frame(root, relief="ridge", borderwidth=2)
-    sensors_frame = tk.Frame(root, relief="ridge", borderwidth=2)
-    settings_frame = tk.Frame(root, relief="ridge", borderwidth=2)
-    data_frame = tk.Frame(root, relief="ridge", borderwidth=2)
+    filename_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
+    sensors_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
+    settings_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
+    data_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=2)
 
     # Place the frames in the root window
-    fileName_frame.grid(row=0, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
+    filename_frame.grid(row=0, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
     sensors_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
     settings_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
     data_frame.grid(row=1, column=2, padx=10, pady=10, sticky="nsew")
@@ -108,7 +111,7 @@ def main():
 
     fileTitle = tk.StringVar()
 
-    fileLabel = tk.Label(fileName_frame, textvariable=fileTitle)
+    fileLabel = tk.Label(filename_frame, textvariable=fileTitle)
     fileTitle.set("No file selected")
     fileLabel.pack(side=tk.TOP)
 
@@ -200,6 +203,7 @@ def main():
     thresholdText.set("Thresholds:")
     label.pack()
 
+    notebook.pack()
     def forceSlider(name):
         if name == "ascending":
             ascendingSensorSlider.forceValues([ascendingMin.get(), ascendingMax.get()])
