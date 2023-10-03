@@ -104,7 +104,7 @@ def main():
         title = str(fileTitle.get()).split('/')[-1]
         title = title.split('.')[0]
         print(title)
-        export.createexcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), [])
+        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), [])
 
     def placeComment():
         global commentsDict

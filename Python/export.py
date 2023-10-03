@@ -6,7 +6,7 @@ header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
 ]
 
-def createexcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data):
+def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data):
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
