@@ -6,11 +6,12 @@ header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
 ]
 
-def createexcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data):
+def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data):
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
     worksheet.title = "Data"
+    headerSize = len(header[0]) 
 #add regions
     count = 0
     while startAscending + count < startTransverse:
@@ -32,6 +33,12 @@ def createexcelWorkBook(name,startAscending,startTransverse,startDescending,star
     while not startRectum + count >endRectum:
         header[0].append('Rectum' + str(startRectum + count))
         count += 1
+#try to append data to the header
+    try:
+        for line in data:
+            header.append(line)
+    except:
+        print("error in datalijn toevoegen")    
 # Write the header to the worksheet
     for row in header:
         worksheet.append(row)
@@ -42,18 +49,14 @@ def createexcelWorkBook(name,startAscending,startTransverse,startDescending,star
     lenDesc = startSigmoid - startDescending
     lenSig = startRectum - startSigmoid
     lenRect = endRectum - startRectum + 1
-#decide where regions stop    
-    stopAsc = 7+lenAsc
+#decide where regions stop   
+    stopAsc = headerSize +lenAsc
     stopTrans = stopAsc+lenTrans
     stopDesc = stopTrans+lenDesc
     stopSig = stopDesc+lenSig
     stopRect = stopSig+lenRect
-    print(stopAsc)
-    print(stopTrans)
-    print(stopDesc)
-    print(stopSig)
-    print(stopRect)
 
+#color the regions to distinguish them
     fill = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")
     for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=8, max_col=stopAsc):
         for cell in row:
@@ -87,4 +90,4 @@ def createexcelWorkBook(name,startAscending,startTransverse,startDescending,star
 
 if __name__ == '__main__':
     #elke regio is 1 lang => nooit dubbel in xlsx
-    createexcelWorkBook('test',1,5,6,7,8,8, [])
+    createexcelWorkBook('test',1,5,6,7,8,8, [[1,"A",10,1,1,5,4,10,10,10,10,0,0,0,0]])

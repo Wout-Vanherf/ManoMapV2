@@ -7,10 +7,12 @@ from tkinter import ttk as ttk
 import heatplot
 import manoutils
 import signalplot
+import export
 import detection
 
 global file
 global valuesDict
+global commentsDict
 commentsDict = dict()
 contractions = []
 
@@ -111,7 +113,11 @@ def main():
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
     def ExportFindings():
-        print("nog niet geimplementeerd.")
+        print(fileTitle.get())
+        title = str(fileTitle.get()).split('/')[-1]
+        title = title.split('.')[0]
+        print(title)
+        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), [])
 
     def placeComment():
         global commentsDict
@@ -363,7 +369,7 @@ def main():
     exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
 
-    def add_settings_var(root, name, steps=1.0,minimum=0.0,maximum=100.0, val=1.0):
+    def add_settings_var(root, name, steps=1,minimum=0,maximum=100, val=1):
         tmp_frame = tk.Frame(root, borderwidth=10)
         tmp_double_var = tk.DoubleVar(value=val)
 
