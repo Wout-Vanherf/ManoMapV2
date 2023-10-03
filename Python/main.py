@@ -2,15 +2,17 @@ import tkinter as tk
 from tkinter.filedialog import askopenfilename
 from tkinter import messagebox
 from RangeSlider.RangeSlider import RangeSliderH
+from tkinter import ttk as ttk
 
 import heatplot
 import manoutils
 import signalplot
+import detection
 
 global file
 global valuesDict
-global commentsDict
 commentsDict = dict()
+contractions = []
 
 differentialMode = False
 
@@ -72,34 +74,42 @@ def main():
 
     # Buttons for plotting and detecting
     def showPlotPressed():
-        global commentsDict
-        slidervals = visibleSensorSlider.getValues()
-        first_sensor = int(slidervals[0])
-        last_sensor = int(slidervals[1])
-        thresholdVals = thresholdSlider.getValues()
-        minThreshold = int(thresholdVals[0])
-        maxThreshold = int(thresholdVals[1])
-        colormap = clicked.get()
-        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
-
+        try:
+            global commentsDict
+            slidervals = visibleSensorSlider.getValues()
+            first_sensor = int(slidervals[0])
+            last_sensor = int(slidervals[1])
+            thresholdVals = thresholdSlider.getValues()
+            minThreshold = int(thresholdVals[0])
+            maxThreshold = int(thresholdVals[1])
+            colormap = clicked.get()
+            heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
     def showSignalsPressed():
-        global commentsDict
-        slidervals = visibleSensorSlider.getValues()
-        first_sensor = int(slidervals[0])
-        last_sensor = int(slidervals[1])
-        thresholdVals = thresholdSlider.getValues()
-        minThreshold = int(thresholdVals[0])
-        maxThreshold = int(thresholdVals[1])
-        colormap = clicked.get()
-        signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get())
+        try:
+            global commentsDict
+            slidervals = visibleSensorSlider.getValues()
+            first_sensor = int(slidervals[0])
+            last_sensor = int(slidervals[1])
+            thresholdVals = thresholdSlider.getValues()
+            minThreshold = int(thresholdVals[0])
+            maxThreshold = int(thresholdVals[1])
+            colormap = clicked.get()
+            global contractions
+            signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get(), detected_events=contractions)
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
 
     def detectEventsPressed():
-        distance = inputtxt.get("1.0", "end-1c")
         try:
-            distance = int(distance)
-            print(distance)
-        except ValueError:
-            messagebox.showinfo("Error", "You can only input a number in the distance field.")
+            global valuesDict
+            global contractions
+            filedata = manoutils.data_preperation(valuesDict)
+            results = detection.find_patterns_from_values_dict(filedata, 10,amount_of_sensors=3,amount_overlapped=2)
+            contractions = detection.find_contractions_from_patterns(results, 1)
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
     def ExportFindings():
         print("nog niet geimplementeerd.")
 
@@ -120,17 +130,17 @@ def main():
 
     line_opacity = tk.DoubleVar(value=1)
 
-    notebook = tk.ttk.Notebook()
-    main_tab = tk.ttk.Frame(notebook)
-    advanced_settings_tab = tk.ttk.Frame(notebook)
+    notebook = ttk.Notebook()
+    main_tab = ttk.Frame(notebook)
+    advanced_settings_tab = ttk.Frame(notebook)
     notebook.add(main_tab, text = 'Home')
     notebook.add(advanced_settings_tab, text = 'Advanced Settings')
     # Create  frames
-    filename_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=10)
-    sensors_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=5)
-    settings_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=5)
-    data_frame = tk.ttk.Frame(main_tab, relief="ridge", borderwidth=5)
-    advanced_settings = tk.ttk.Frame(advanced_settings_tab, relie ="ridge", borderwidth=2)
+    filename_frame = ttk.Frame(main_tab, relief="ridge", borderwidth=10)
+    sensors_frame = ttk.Frame(main_tab, relief="ridge", borderwidth=5)
+    settings_frame = ttk.Frame(main_tab, relief="ridge", borderwidth=5)
+    data_frame = ttk.Frame(main_tab, relief="ridge", borderwidth=5)
+    advanced_settings = ttk.Frame(advanced_settings_tab, relie ="ridge", borderwidth=2)
 
     # Place the frames in the root window
     filename_frame.grid(row=0, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
@@ -353,7 +363,7 @@ def main():
     exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
 
-    def add_settings_var(root, name, steps=1,minimum=0,maximum=100, val=1):
+    def add_settings_var(root, name, steps=1.0,minimum=0.0,maximum=100.0, val=1.0):
         tmp_frame = tk.Frame(root, borderwidth=10)
         tmp_double_var = tk.DoubleVar(value=val)
 

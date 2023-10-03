@@ -1,57 +1,4 @@
-import random
-
-import numpy as np
-import matplotlib.pyplot as plt
 import manoutils
-from scipy.signal import morlet
-from matplotlib.animation import FuncAnimation
-
-# Parameters
-freq = 1
-width = 500
-t = np.linspace(-5 * np.pi, 5 * np.pi, width)
-
-# Initialize the figure and axis
-fig, ax = plt.subplots(figsize=(10, 6))
-line_real, = ax.plot([], [], label='Real part')
-
-# Set plot limits
-ax.set_xlim(-5 * np.pi, 5 * np.pi)
-ax.set_ylim(-1, 1)
-ax.set_title('Morlet Wavelet')
-ax.set_xlabel('Time')
-ax.set_ylabel('Amplitude')
-ax.legend()
-ax.grid(True)
-
-
-def plot_values(arr):
-    x_values = [(0 + i*0.1) for i, el in enumerate(arr)]
-
-def plot_values(arr):
-    x_values = [(0 + i*0.1) for i,el in enumerate(arr)]
-    y_values = arr
-
-    xmin = min(x_values)
-    xmax = max(x_values)
-    ax.set_xlim(xmin-0.5, xmax+0.5)
-
-
-
-def make_it_real(arr):
-    out = []
-    for el in arr:
-        out.append(float(el))
-    return out
-
-def update(frame):
-    global freq
-    global direction
-    freq += 0.01
-    morlet_wavelet = morlet(M=width, w=1, s=1, complete=True)
-    morlet_wavelet = make_it_real(morlet_wavelet)
-    line_real.set_data(t, np.real(morlet_wavelet))
-    return line_real
 
 def transpose_matrix(m):
     out_untransfomed = list(zip(*m))
@@ -172,15 +119,14 @@ def find_contraction_length(pattern_results, pair, length, rowindex):
     return length + 1
 
 def find_contractions_from_patterns(pattern_results, contraction_length):
+    found_contractions = []
     for rowindex in range(len(pattern_results)):
         for pair in pattern_results[rowindex]:
             length = find_contraction_length(pattern_results, pair, 0, rowindex)
             if length > contraction_length:
-                print("Found contraction of length", length, "on row", rowindex, "(pair: ", pair,")")
+                #print("Found contraction of length", length, "on row", rowindex, "(pair: ", pair,")")
+                found_contractions.append([rowindex, length, pair])
+    print("done detecting")
+    return found_contractions
 
 
-filedata = manoutils.CSVToDict("functions/Nalox1_18_07_2018.txt")
-filedata = manoutils.data_preperation(filedata)
-results = find_patterns_from_values_dict(filedata, 10,amount_of_sensors=3,amount_overlapped=2)
-
-find_contractions_from_patterns(results, 5)
