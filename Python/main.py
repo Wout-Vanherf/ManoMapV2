@@ -134,7 +134,7 @@ def main():
     root = tk.Tk()
     root.title("ManoMap Remake")
 
-    line_opacity = tk.DoubleVar(value=1)
+    line_opacity = tk.DoubleVar(value=0.7)
 
     notebook = ttk.Notebook()
     main_tab = ttk.Frame(notebook)
@@ -413,7 +413,9 @@ def main():
     drop.pack(pady=10, padx=10,side="bottom")
 
     theme_frame.pack(side="bottom")
+
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
+
     root.mainloop()
 
 
