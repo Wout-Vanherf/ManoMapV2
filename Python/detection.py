@@ -121,7 +121,6 @@ def find_patterns_from_values_dict(valuedict, threshold, amount_of_sensors=3, am
     return find_pattern(data_dict, threshold, amount_of_sensors=3, amount_overlapped=2)
 
 
-
 def find_pattern(data_dict,
                  threshold,
                  amount_of_sensors=3,
