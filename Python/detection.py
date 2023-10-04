@@ -1,6 +1,4 @@
-
 import manoutils
-
 
 def transpose_matrix(m):
     out_untransfomed = list(zip(*m))

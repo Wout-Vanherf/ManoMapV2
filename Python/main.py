@@ -110,9 +110,10 @@ def main():
             global contractions
             filedata = manoutils.data_preperation(valuesDict)
             results = detection.find_patterns_from_values_dict(filedata, 10,amount_of_sensors=3,amount_overlapped=2)
-            contractions = detection.find_contractions_from_patterns(results, 1)
+            contractions = detection.find_contractions_from_patterns(results, 10)
+            messagebox.showinfo("detection", "detection completed!")
         except NameError:
-            messagebox.showinfo("Error", "Please select a file.")
+                messagebox.showinfo("Error", "Please select a file.")
     def ExportFindings():
         print(fileTitle.get())
         title = str(fileTitle.get()).split('/')[-1]
