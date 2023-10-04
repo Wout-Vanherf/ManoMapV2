@@ -9,7 +9,8 @@ def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMo
     # Only shows values between first and last sensor, ADDS AN EMPTY LINE BEFORE DATA
     p = manoutils.dictionary_to_ndarray(valuesDict)[firstSensor:lastSensor + 1]
     l = np.array([[0 for _ in p[1]]])
-    p = np.vstack((l, p))
+    for i in "12":
+        p = np.vstack((l, p)) #NIET AANRAKEN MAN IS CURSED, ECHT WAAR GELOOF MIJ SHIT GAAT BREKEN
 
     minT = minThreshold
     maxT = maxThreshold
