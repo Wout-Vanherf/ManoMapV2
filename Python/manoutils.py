@@ -2,7 +2,7 @@ import csv
 import numpy as np
 from scipy.signal import savgol_filter, wiener
 
-granularity_factor = 50
+granularity_factor = 5
 
 def get_granularity_factor():
     return granularity_factor
@@ -129,7 +129,6 @@ def transform_dict_per_sensor_to_dict_per_timeframe(dict, timeframe = 0.1):
     return new_dict
 
 #time in sec
-
 def baseline_removal(dict, time = 60):
     #aanpassen als data niet om de 0.1 sec
     time_between_data = 0.1
@@ -137,7 +136,7 @@ def baseline_removal(dict, time = 60):
     dict_baseline_removal  ={}
     dict = transform_dict_per_timeframe_to_per_sensor(dict)
     for key, value in dict.items():
-        min_of_first_values = min(value[:amount_of_values_for_baseline_removal])
+        min_of_first_values = np.percentile(value[:amount_of_values_for_baseline_removal],10)
         values_with_baseline_removal = []
         for x in value:
             values_with_baseline_removal.append(x-min_of_first_values)
@@ -163,35 +162,3 @@ def data_preperation(dict):
     wieners = wiener_filter_dict(savitzky)
     baselineremoval2 = baseline_removal(wieners)
     return baselineremoval2
-
-
-exampledata = {0.0: [11, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-               0.1: [11, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-               0.2: [11, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-               0.3: [10, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-               0.4: [11, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
-               0.5: [10, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
-               0.6: [11, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-               0.7: [10, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-               0.8: [11, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-               0.9: [10, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]
-               }
-"""
-for key, value in exampledata.items():
-    print(key,value)
-print("")
-print("baselineremoval")
-for key, value in baseline_removal(exampledata,0.5).items():
-    print(key, value)
-print("")
-print("savitzky Golay filter")
-for key, value in savitzky_Golay_filter_dict(exampledata).items():
-    print(key, value)
-print("")
-print("wiener filter")
-for key, value in wiener_filter_dict(exampledata).items():
-    print(key, value)
-print("datapreperation")
-for key, value in data_preperation(exampledata).items():
-    print(key, value)
-"""
