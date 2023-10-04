@@ -13,6 +13,7 @@ import detection
 global file
 global valuesDict
 global commentsDict
+
 commentsDict = dict()
 contractions = []
 
