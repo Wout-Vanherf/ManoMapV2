@@ -74,12 +74,12 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
             x1 = row* granulariteit/10
             #x1 = row/manoutils.get_granularity_factor()
 
-            y1 = smallest_common*scaling_factor + (y_offset2 - (5*smallest_common))
+            y1 = (smallest_common -1)*scaling_factor + (y_offset2 - (5*(smallest_common)))
             plt.scatter(x1, y1, color = 'red', label='begin point')
             x2 = (row + length) *granulariteit/10
             #x2 = (row + length)/manoutils.get_granularity_factor()
 
-            y2 = biggest_common*scaling_factor + (y_offset2 - (5*biggest_common))
+            y2 = (biggest_common-1)*scaling_factor + (y_offset2 - (5*(biggest_common) ))
             plt.scatter(x2, y2, color='blue', label = 'end_point')
             print("smallest_common:", smallest_common, "biggest_common:", biggest_common)
             print("coordinaten", x1, y1, x2, y2)
