@@ -149,7 +149,8 @@ def find_contractions_from_patterns(pattern_results, contraction_length):
 
     for c in contractions:
         seqs = []
-        seqs.append(c["sequences"][0]["matches"])
+        if c["sequences"] != []:
+            seqs.append(c["sequences"][0]["matches"])
         for seq in c["sequences"]:
             seqs.append(seq["sensors"])
         c["sequences"] = seqs

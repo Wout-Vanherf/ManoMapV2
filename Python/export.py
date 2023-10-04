@@ -90,4 +90,4 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
 
 if __name__ == '__main__':
     #elke regio is 1 lang => nooit dubbel in xlsx
-    createexcelWorkBook('test',1,5,6,7,8,8, [[1,"A",10,1,1,5,4,10,10,10,10,0,0,0,0]])
+    createExcelWorkBook('test',1,5,6,7,8,8, [[1,"A",10,1,1,5,4,10,10,10,10,0,0,0,0]])

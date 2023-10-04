@@ -2,7 +2,7 @@ import csv
 import numpy as np
 from scipy.signal import savgol_filter, wiener
 
-granularity_factor = 50
+granularity_factor = 5
 
 def get_granularity_factor():
     return granularity_factor
@@ -129,7 +129,6 @@ def transform_dict_per_sensor_to_dict_per_timeframe(dict, timeframe = 0.1):
     return new_dict
 
 #time in sec
-
 def baseline_removal(dict, time = 60):
     #aanpassen als data niet om de 0.1 sec
     time_between_data = 0.1
@@ -137,7 +136,7 @@ def baseline_removal(dict, time = 60):
     dict_baseline_removal  ={}
     dict = transform_dict_per_timeframe_to_per_sensor(dict)
     for key, value in dict.items():
-        min_of_first_values = min(value[:amount_of_values_for_baseline_removal])
+        min_of_first_values = np.percentile(value[:amount_of_values_for_baseline_removal],10)
         values_with_baseline_removal = []
         for x in value:
             values_with_baseline_removal.append(x-min_of_first_values)
