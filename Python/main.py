@@ -13,6 +13,7 @@ import detection
 global file
 global valuesDict
 global commentsDict
+global contractions
 
 commentsDict = dict()
 contractions = []
@@ -31,6 +32,8 @@ def main():
     # functions and methods
     def openFile():
         global commentsDict
+        global contractions
+        contractions = []
         if len(commentsDict) > 0:
             global popup
             popup = tk.Toplevel(root)
@@ -114,6 +117,11 @@ def main():
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
                 messagebox.showinfo("Error", "Please select a file.")
+
+    def clearEventsPressed():
+        global contractions
+        contractions = []
+    
     def ExportFindings():
         print(fileTitle.get())
         title = str(fileTitle.get()).split('/')[-1]
@@ -186,14 +194,6 @@ def main():
     hVar2 = tk.DoubleVar(value=40)
     visibleSensorSlider = RangeSliderH(sensors_frame, [hVar1, hVar2], Width=400, Height=65, padX=15, min_val=1, max_val=40, show_value=True, step_size=1, bar_radius=5, digit_precision='.0f')
     visibleSensorSlider.pack()
-
-    distanceText = tk.StringVar()
-    label = tk.Label(sensors_frame, textvariable=distanceText)
-    distanceText.set("Distance between sensors: (cm)")
-    label.pack()
-
-    inputtxt = tk.Text(sensors_frame, height=1, width=30)
-    inputtxt.pack()
 
     colonRegionsText = tk.StringVar()
     label = tk.Label(sensors_frame, textvariable=colonRegionsText)
@@ -368,6 +368,9 @@ def main():
     detectButton = tk.Button(data_frame, text="Detect Events", command=detectEventsPressed)
     detectButton.pack(pady=10, padx=10)
 
+    clearButton = tk.Button(data_frame, text="Clear Events", command=clearEventsPressed)
+    clearButton.pack(pady=10, padx=10)
+
     exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
 
@@ -417,6 +420,14 @@ def main():
     theme_frame.pack(side="bottom")
 
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
+
+    distanceText = tk.StringVar()
+    label = tk.Label(advanced_settings, textvariable=distanceText)
+    distanceText.set("Distance between sensors: (cm)")
+    label.pack()
+
+    inputtxt = tk.Text(advanced_settings, height=1, width=30)
+    inputtxt.pack()
 
     root.mainloop()
 
