@@ -94,6 +94,16 @@ def convertTime(input):
         print("fout in omzetten")
     return total
 
+def convertTimeToText(input):
+    total_seconds = input // 10  # Convert deciseconds to seconds
+    hours, remainder = divmod(total_seconds, 3600)  # Calculate hours
+    minutes, seconds = divmod(remainder, 60)  # Calculate minutes and seconds
+
+    # Format the time as 'HH:MM:SS'
+    time_format = '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
+
+    return time_format
+
 def savgol_smooth(data, window_size, po=3):
     return savgol_filter(data, window_length=window_size, polyorder=po)
 

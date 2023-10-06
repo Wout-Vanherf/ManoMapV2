@@ -1,12 +1,14 @@
 import openpyxl
 from openpyxl.styles import PatternFill
 
+import manoutils
+
 # Sample header (you can replace this with your own header)
 header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
 ]
 
-def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data):
+def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict):
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
@@ -33,16 +35,23 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     while not startRectum + count >endRectum:
         header[0].append('Rectum' + str(startRectum + count))
         count += 1
+#try to add comments to data
+    try:
+        #converts commentsDict to list, adds them to the data, then sorts it by time
+        commentsList = [[manoutils.convertTimeToText(key), value] for key, value in commentsDict.items()]
+        data += commentsList
+        data = sorted(data, key=lambda x: x[0])
+    except:
+        print("error in comments toevoegen")
 #try to append data to the header
     try:
         for line in data:
             header.append(line)
     except:
         print("error in datalijn toevoegen")    
-# Write the header to the worksheet
+# Write all data to xlsx
     for row in header:
         worksheet.append(row)
-#colour regions
 #length of regions
     lenAsc = startTransverse - startAscending
     lenTrans = startDescending - startTransverse
@@ -81,6 +90,20 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=1+stopSig, max_col=stopRect):
         for cell in row:
             cell.fill = fill
+    
+    #colour all the comments
+    fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+
+# Iterate through the rows, starting from the second row
+    rownumber = 0
+    for row in worksheet.iter_rows(min_row=0, values_only=True):
+        rownumber += 1
+        if row[2] is None:
+            print(row)
+            print(rownumber)
+            for row in worksheet.iter_rows(min_row=rownumber, max_row=rownumber, min_col=0, max_col=2):
+                for cell in row:
+                    cell.fill = fill
 
 
 # Specify the XLSX file name
@@ -90,4 +113,6 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
 
 if __name__ == '__main__':
     #elke regio is 1 lang => nooit dubbel in xlsx
-    createExcelWorkBook('test',1,5,6,7,8,8, [[1,"A",10,1,1,5,4,10,10,10,10,0,0,0,0]])
+    comments = dict()
+    comments[10] = "t"
+    createExcelWorkBook('test',1,5,6,7,8,8, [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]],comments)
