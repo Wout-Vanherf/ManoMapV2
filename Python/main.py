@@ -93,19 +93,19 @@ def main():
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
     def showSignalsPressed():
-        try:
-            global commentsDict
-            slidervals = visibleSensorSlider.getValues()
-            first_sensor = int(slidervals[0])
-            last_sensor = int(slidervals[1])
-            thresholdVals = thresholdSlider.getValues()
-            minThreshold = int(thresholdVals[0])
-            maxThreshold = int(thresholdVals[1])
-            colormap = clicked.get()
-            global contractions
-            signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get(), detected_events=contractions)
-        except NameError:
-            messagebox.showinfo("Error", "Please select a file.")
+
+        global commentsDict
+        slidervals = visibleSensorSlider.getValues()
+        first_sensor = int(slidervals[0])
+        last_sensor = int(slidervals[1])
+        thresholdVals = thresholdSlider.getValues()
+        minThreshold = int(thresholdVals[0])
+        maxThreshold = int(thresholdVals[1])
+        colormap = clicked.get()
+        global contractions
+        signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get(), detected_events=contractions)
+        # except NameError:
+         #   messagebox.showinfo("Error", "Please select a file.")
 
     def detectEventsPressed():
         try:
