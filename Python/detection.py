@@ -1,5 +1,6 @@
 import manoutils
 
+#transposes a matrix (2D list, or 2D ndArray, both should work)
 def transpose_matrix(m):
     out_untransfomed = list(zip(*m))
     out = []
@@ -7,6 +8,7 @@ def transpose_matrix(m):
         out.append(list(val))
     return out
 
+# prints the matrix with row numbers, for debugging functionality, some functions depend on it so don't just delete it
 def matrix_print(m, title="matrix?"):
     print(title)
     row_number = 1
@@ -20,54 +22,13 @@ def matrix_print(m, title="matrix?"):
     print("")
 
 
-exampledata = {1: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-               2: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
-               3: [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-               4: [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-               5: [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
-               6: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
-               7: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-               8: [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-               9: [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-               10:[0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]
-              }
-
-
-test_matrix = []
-for val in exampledata.values():
-    test_matrix.append(val)
-
-
-#checks if 2 sequences match: result gives a dict with 2 vars:
-#   - "sensors": the current sequence
-#   - "matches": the sensors of the sensors of its match
-def match_multiple_seq(sequences1,sequences2, amount_overlapped):
-    out = []
-    for seq1 in sequences1:
-        for seq2 in sequences2:
-            if match_single_seq(seq1, seq2, amount_overlapped):
-                tmp = dict()
-                tmp["sensors"] = seq2
-                tmp["matches"] = seq1
-                out.append(tmp)
-    return out
-
-
-def match_single_seq(seq1, seq2, amount_overlapped):
-    tmp1 = []
-    for val in seq1:
-        tmp1.append(val[0])
-    tmp2 = []
-    for val in seq2:
-        tmp2.append(val[0])
-    return len(set(tmp1) & set(tmp2)) >= amount_overlapped
-
-
 def find_patterns_from_values_dict(valuedict, threshold, amount_of_sensors=3, amount_overlapped=2):
     data_dict = manoutils.transform_dict_per_timeframe_to_per_sensor(valuedict)
     return find_pattern(data_dict, threshold, amount_of_sensors=3, amount_overlapped=2)
 
 
+# scans every record for consecutive values that are above the threshold, if there are more than "amount_of_sensors"
+# values in a single record, it is considered a sequence
 def find_pattern(data_dict,
                  threshold,
                  amount_of_sensors=3,
@@ -116,7 +77,36 @@ def find_pattern(data_dict,
         result.append(match_multiple_seq(previous_vals, current_vals, amount_overlapped))
     return result
 
+# checks if 2 sequences match. Sequences match if they share atleast "amount_overlapped" of values above the threshold at the same sensors.
+# result gives a dict with 2 vars:
+#   - "sensors": the current sequence
+#   - "matches": the sensors of the sensors of its match
+def match_multiple_seq(sequences1,sequences2, amount_overlapped):
+    out = []
+    for seq1 in sequences1:
+        for seq2 in sequences2:
+            if match_single_seq(seq1, seq2, amount_overlapped):
+                tmp = dict()
+                tmp["sensors"] = seq2
+                tmp["matches"] = seq1
+                out.append(tmp)
+    return out
 
+
+# Calculates how many sensors are in common in 2 sequences, then returns whether this is greater or lower than "amount_overlapped"
+def match_single_seq(seq1, seq2, amount_overlapped):
+    tmp1 = []
+    for val in seq1:
+        tmp1.append(val[0])
+    tmp2 = []
+    for val in seq2:
+        tmp2.append(val[0])
+    return len(set(tmp1) & set(tmp2)) >= amount_overlapped
+
+
+# Calculates how many records long a contraction is by recursively traversing the "matches" variable of the next record
+# Returns a dictionary that has the length of the contraction, the measure number of the start of the contraction and
+# The sequences that were present. THIS ALSO REMOVES THE SEQUENCES FROM THE PATTERN RESULTS AT RUNTIME TO AVOID DUPLICATES
 def find_contraction_length(pattern_results, pair, length, rowindex, sequences=[]):
     try:
         for nextpair in pattern_results[rowindex + 1]:
@@ -136,6 +126,9 @@ def find_contraction_length(pattern_results, pair, length, rowindex, sequences=[
     out["sequences"] = sequences
     return out
 
+
+# Calls the find_contraction_from_mattern on all the pattern results, filtering all the contractions that are shorter
+# than "contraction_length".
 def find_contractions_from_patterns(pattern_results, contraction_length):
     contractions = []
     for rowindex in range(len(pattern_results)):
