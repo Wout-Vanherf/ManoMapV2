@@ -1,14 +1,16 @@
 import openpyxl
 from openpyxl.styles import PatternFill
+import csv
 
 import manoutils
 
-# Sample header (you can replace this with your own header)
 header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
 ]
 
 def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict):
+#also export to csv
+    exportToCsv(data)
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
@@ -37,7 +39,7 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
         count += 1
 #try to add comments to data
     try:
-        #converts commentsDict to list, adds them to the data, then sorts it by time
+#converts commentsDict to list, adds them to the data, then sorts it by time
         commentsList = [[manoutils.convertTimeToText(key), value] for key, value in commentsDict.items()]
         data += commentsList
         data = sorted(data, key=lambda x: x[0])
@@ -91,7 +93,7 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
         for cell in row:
             cell.fill = fill
     
-    #colour all the comments
+#colour all the comments
     fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
 
 # Iterate through the rows, starting from the second row
@@ -105,14 +107,22 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
                 for cell in row:
                     cell.fill = fill
 
-
-# Specify the XLSX file name
     xlsx_file = name + ".xlsx"
-# Save the workbook to the specified file
     workbook.save(xlsx_file)
+
+
+def exportToCsv(data, filename):
+    with open(filename, 'w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file)
+        for row in data:
+            csv_writer.writerow(row)
 
 if __name__ == '__main__':
     #elke regio is 1 lang => nooit dubbel in xlsx
     comments = dict()
     comments[10] = "t"
+    data = [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]]
+
     createExcelWorkBook('test',1,5,6,7,8,8, [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]],comments)
+    filename = 'test2.csv'
+    exportToCsv(data, filename)
