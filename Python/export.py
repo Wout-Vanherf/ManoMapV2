@@ -4,12 +4,11 @@ import csv
 
 import manoutils
 
-header = [
-    ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
-]
-
 def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict):
 #also export to csv
+    header = [
+    ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
+    ]
     exportToCsv(data, name)
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
@@ -34,7 +33,7 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
         header[0].append('Sigmoid' + str(startSigmoid + count))
         count += 1
     count = 0
-    while not startRectum + count >endRectum:
+    while not startRectum + count > endRectum:
         header[0].append('Rectum' + str(startRectum + count))
         count += 1
 #try to add comments to data
@@ -69,7 +68,7 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
 
 #color the regions to distinguish them
     fill = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")
-    for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=8, max_col=stopAsc):
+    for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=headerSize, max_col=stopAsc):
         for cell in row:
             cell.fill = fill
 
@@ -101,8 +100,8 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     for row in worksheet.iter_rows(min_row=0, values_only=True):
         rownumber += 1
         if row[2] is None:
-            print(row)
-            print(rownumber)
+            #print(row)
+            #print(rownumber)
             for row in worksheet.iter_rows(min_row=rownumber, max_row=rownumber, min_col=0, max_col=2):
                 for cell in row:
                     cell.fill = fill
@@ -125,5 +124,5 @@ if __name__ == '__main__':
 
     createExcelWorkBook('test',1,5,6,7,8,8, [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]],comments)
     
-    #filename = 'test2.csv'
+    #filename = 'test2'
     #exportToCsv(data, filename)
