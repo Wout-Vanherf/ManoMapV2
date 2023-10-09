@@ -10,7 +10,7 @@ header = [
 
 def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict):
 #also export to csv
-    exportToCsv(data)
+    exportToCsv(data, name)
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
@@ -112,7 +112,7 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
 
 
 def exportToCsv(data, filename):
-    with open(filename, 'w', newline='') as csv_file:
+    with open(filename + '.csv', 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
         for row in data:
             csv_writer.writerow(row)
@@ -124,5 +124,6 @@ if __name__ == '__main__':
     data = [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]]
 
     createExcelWorkBook('test',1,5,6,7,8,8, [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]],comments)
-    filename = 'test2.csv'
-    exportToCsv(data, filename)
+    
+    #filename = 'test2.csv'
+    #exportToCsv(data, filename)
