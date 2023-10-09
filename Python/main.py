@@ -112,7 +112,7 @@ def main():
             global valuesDict
             global contractions
             filedata = manoutils.data_preperation(valuesDict)
-            results = detection.find_patterns_from_values_dict(filedata, 10,amount_of_sensors=3,amount_overlapped=2)
+            results = detection.find_patterns_from_values_dict(filedata, 10,amount_of_sensors=2,amount_overlapped=2)
             contractions = detection.find_contractions_from_patterns(results, 10)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:

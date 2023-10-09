@@ -2,6 +2,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import manoutils
 
+def ysort(xvals, yvals):
+    if len(xvals) != len(yvals):
+        raise ValueError("Dimension mismatch")
+    tmp = []
+    for i in range(len(xvals)):
+        tmp.append((xvals[i], yvals[i]))
+    tmp = sorted(tmp, key=lambda val: val[1])
+    tmp_xvals = []
+    tmp_yvals = []
+    for val in tmp:
+        tmp_xvals.append(val[0])
+        tmp_yvals.append(val[1])
+    return tmp_xvals, tmp_yvals
+
 
 def cubic_bezier(t, control_points):
     n = len(control_points)
@@ -9,6 +23,12 @@ def cubic_bezier(t, control_points):
     for i in range(len(control_points)):
         result += control_points[i] * np.math.comb(n - 1, i) * (1 - t) ** (n - 1 - i) * t ** i
     return result
+
+def draw_direct(xvals, yvals):
+    for i in range(len(xvals[:-1])):
+        x_values = [xvals[i], xvals[i+1]]
+        y_values = [yvals[i], yvals[i+1]]
+        plt.plot(x_values, y_values, 'bo', linestyle="--")
 
 
 
@@ -23,7 +43,7 @@ def draw_bezier(x_values, y_values):
         curve_y.append(cubic_bezier(t, y_values))
     plt.plot(curve_x, curve_y, color='blue', linestyle='--')
 
-def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, opacity=1, colormap='inferno', detected_events=""):
+def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, opacity=1, colormap='inferno', detected_events="", draw_method="bezier"):
     data = valuesDict
     granulariteit = manoutils.get_granularity_factor()
 
@@ -114,7 +134,12 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
                 y_values.append(y)
 
                 plt.scatter(x, y, color = 'red',marker ='x')
-            draw_bezier(x_values, y_values)
+
+            x_values,y_values = ysort(x_values, y_values)
+            if draw_method == "bezier":
+                draw_bezier(x_values, y_values)
+            if draw_method == "direct":
+                draw_direct(x_values, y_values)
 
     plt.show()
 
