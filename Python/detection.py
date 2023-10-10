@@ -22,14 +22,16 @@ def matrix_print(m, title="matrix?"):
     print("")
 
 
-def find_patterns_from_values_dict(valuedict, threshold, amount_of_sensors=3, amount_overlapped=2):
+def find_patterns_from_values_dict(valuedict, first_sensor, last_sensor, threshold, amount_of_sensors=3, amount_overlapped=2):
     data_dict = manoutils.transform_dict_per_timeframe_to_per_sensor(valuedict)
-    return find_pattern(data_dict, threshold, amount_of_sensors=3, amount_overlapped=2)
+    return find_pattern(data_dict, first_sensor, last_sensor, threshold, amount_of_sensors=amount_of_sensors, amount_overlapped=amount_overlapped)
 
 
 # scans every record for consecutive values that are above the threshold, if there are more than "amount_of_sensors"
 # values in a single record, it is considered a sequence
 def find_pattern(data_dict,
+                 first_sensor,
+                 last_sensor,
                  threshold,
                  amount_of_sensors=3,
                  amount_overlapped=2,
@@ -39,6 +41,7 @@ def find_pattern(data_dict,
     m = []
     for val in data_dict.values():
         m.append(val)
+    m = m[first_sensor-1:last_sensor]
     m = transpose_matrix(m)
 
     if print_matrix:

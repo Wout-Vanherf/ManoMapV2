@@ -112,8 +112,11 @@ def main():
             global valuesDict
             global contractions
             filedata = manoutils.data_preperation(valuesDict)
-            results = detection.find_patterns_from_values_dict(filedata, 10,amount_of_sensors=2,amount_overlapped=2)
-            contractions = detection.find_contractions_from_patterns(results, 10)
+            slidervals = visibleSensorSlider.getValues()
+            first_sensor = int(slidervals[0])
+            last_sensor = int(slidervals[1])
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 10,amount_of_sensors=2,amount_overlapped=1)
+            contractions = detection.find_contractions_from_patterns(results, 5)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
                 messagebox.showinfo("Error", "Please select a file.")

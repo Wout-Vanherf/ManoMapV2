@@ -47,6 +47,8 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
     data = valuesDict
     granulariteit = manoutils.get_granularity_factor()
 
+    print(detected_events[0])
+
     x_values = list(data.keys())
     tmp = []
     for val in x_values:
@@ -105,6 +107,7 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
             for sequence in contraction["sequences"]:
                 sequence_counter +=1
                 for value_pair in sequence:
+
                     sensor_number = value_pair[0]
                     pressure_data = value_pair[1]
                     if sensor_number not in pressure_per_sensor_dict.keys():
@@ -148,44 +151,6 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
 
 
 
-
-""""
-    if detected_events != "":
-        for item in detected_events:
-            row = item[0]
-            length  = item[1]
-            matchdict = item[2]
-            sensors = matchdict["sensors"]
-            matches = matchdict["matches"]
-            firstCounter = 0
-            lastCounter = -1
-            smallest_common= sensors[firstCounter]
-            biggest_common=sensors[lastCounter]
-            while smallest_common not in matches:
-                firstCounter +=1
-                smallest_common = sensors[firstCounter]
-            while biggest_common not in matches:
-                lastCounter -=1
-                biggest_common = sensors[lastCounter]
-            x1 = row* granulariteit/10
-            #x1 = row/manoutils.get_granularity_factor()
-
-            y1 = (smallest_common -1)*scaling_factor + (y_offset2 - (5*(smallest_common)))
-            plt.scatter(x1, y1, color = 'red', label='begin point')
-            x2 = (row + length) *granulariteit/10
-            #x2 = (row + length)/manoutils.get_granularity_factor()
-
-            y2 = (biggest_common-1)*scaling_factor + (y_offset2 - (5*(biggest_common) ))
-            plt.scatter(x2, y2, color='blue', label = 'end_point')
-            print("smallest_common:", smallest_common, "biggest_common:", biggest_common)
-            print("coordinaten", x1, y1, x2, y2)
-            line_coefficient = (y2 - y1) / (x2 - x1)
-            if line_coefficient > 0:
-                line_color = 'green'
-            else:
-                line_color = 'yellow'
-            plt.plot([x1, x2], [y1, y2], color=line_color, linestyle='--')
-        """
         ##########HIER NU PUNT PLOTTEN VOOR ROW SMALLEST SENSOR, ROW + LENGTH BIGGEST COMMON
 
 
