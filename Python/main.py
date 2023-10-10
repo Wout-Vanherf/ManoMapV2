@@ -111,8 +111,10 @@ def main():
         try:
             global valuesDict
             global contractions
+            thresholdVals = thresholdSlider.getValues()
+            minThreshold = int(thresholdVals[0])
             filedata = manoutils.data_preperation(valuesDict)
-            results = detection.find_patterns_from_values_dict(filedata, 10,amount_of_sensors=2,amount_overlapped=2)
+            results = detection.find_patterns_from_values_dict(filedata, minThreshold,amount_of_sensors=2,amount_overlapped=2)
             contractions = detection.find_contractions_from_patterns(results, 10)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
@@ -421,6 +423,14 @@ def main():
     theme_frame.pack(side="bottom")
 
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
+
+    granularitySetting = tk.StringVar()
+
+    granularityLabel = tk.Label(advanced_settings, textvariable = granularitySetting)
+    granularitySetting.set("Granulariteit")
+    granularityLabel.pack
+    granularityinput = tk.Text(advanced_settings, height= 1, width= 15)
+    granularityinput.pack()
 
     distanceText = tk.StringVar()
     label = tk.Label(advanced_settings, textvariable=distanceText)

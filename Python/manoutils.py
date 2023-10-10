@@ -2,7 +2,8 @@ import csv
 import numpy as np
 from scipy.signal import savgol_filter, wiener
 
-granularity_factor = 5
+global granularity_factor
+granularity_factor  =20
 
 def get_granularity_factor():
     return granularity_factor
