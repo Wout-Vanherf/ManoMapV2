@@ -333,18 +333,18 @@ def main():
     thresholdSlider.pack()
 
     analysisStartTime = tk.StringVar()
-    label = tk.Label(settings_frame, textvariable=analysisStartTime)
+    starttime_label = tk.Label(settings_frame, textvariable=analysisStartTime)
     analysisStartTime.set("Start time of analysis (HH:MM:SS):")
-    label.pack()
+    starttime_label.pack()
     startTimeText = tk.Text(settings_frame, height=1, width=30)
     startTimeText.pack()
 
     timecommentBundle = tk.Frame(settings_frame)
     timecommentBundle.pack(padx=20, pady=20)
     timeAndCommentText = tk.StringVar()
-    label = tk.Label(timecommentBundle, textvariable=timeAndCommentText)
+    time_comment_label = tk.Label(timecommentBundle, textvariable=timeAndCommentText)
     timeAndCommentText.set("Time & Comment: (HH:MM:SS)")
-    label.pack()
+    time_comment_label.pack()
     timeText = tk.Text(timecommentBundle, height=1, width=10)
     timeText.pack(side=tk.LEFT)
     commentText = tk.Text(timecommentBundle, height=1, width=50)
@@ -355,9 +355,9 @@ def main():
 
     # data frame
     data_title = tk.StringVar()
-    label = tk.Label(data_frame, textvariable=data_title, font=("Helvetica", 16, "underline"))
+    data_label = tk.Label(data_frame, textvariable=data_title, font=("Helvetica", 16, "underline"))
     data_title.set("Data")
-    label.pack()
+    data_label.pack()
 
 
     file_button = tk.Button(data_frame, text="Select Input File", command=openFile)
@@ -399,11 +399,10 @@ def main():
 
     #ADVANCED SETTINGS
 
-
-    label = tk.Label(advanced_settings, textvariable=data_title, font=("Helvetica", 16, "underline"))
-    data_title.set("Advanced Settings")
-    data_title = tk.StringVar()
-    label.pack()
+    advanced_title = tk.StringVar()
+    advanced_title.set("Advanced Settings")
+    advanced_label = tk.Label(advanced_settings, textvariable=advanced_title, font=("Helvetica", 16, "underline"))
+    advanced_label.pack()
 
     theme_frame = tk.Frame(advanced_settings, borderwidth=10)
     options = [
@@ -427,9 +426,9 @@ def main():
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
 
     distanceText = tk.StringVar()
-    label = tk.Label(advanced_settings, textvariable=distanceText)
+    distance_label = tk.Label(advanced_settings, textvariable=distanceText)
     distanceText.set("Distance between sensors: (cm)")
-    label.pack()
+    distance_label.pack()
 
     inputtxt = tk.Text(advanced_settings, height=1, width=30)
     inputtxt.pack()
