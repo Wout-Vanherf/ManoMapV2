@@ -148,6 +148,18 @@ def find_contractions_from_patterns(pattern_results, contraction_length):
         for seq in c["sequences"]:
             seqs.append(seq["sensors"])
         c["sequences"] = seqs
+
+    sizeMatters = []
+    for c in contractions:
+        available_sensors = set()
+        for seq in c["sequences"]:
+            for val in seq:
+                available_sensors.add(val[0])
+        if len(available_sensors) == 2:
+            sizeMatters.append(c)
+
+    for tooShort in sizeMatters:
+        contractions.remove(tooShort)
     return contractions
 
 
