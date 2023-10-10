@@ -93,19 +93,19 @@ def main():
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
     def showSignalsPressed():
-
-        global commentsDict
-        slidervals = visibleSensorSlider.getValues()
-        first_sensor = int(slidervals[0])
-        last_sensor = int(slidervals[1])
-        thresholdVals = thresholdSlider.getValues()
-        minThreshold = int(thresholdVals[0])
-        maxThreshold = int(thresholdVals[1])
-        colormap = clicked.get()
-        global contractions
-        signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get(), detected_events=contractions)
-        # except NameError:
-         #   messagebox.showinfo("Error", "Please select a file.")
+        try:
+            global commentsDict
+            slidervals = visibleSensorSlider.getValues()
+            first_sensor = int(slidervals[0])
+            last_sensor = int(slidervals[1])
+            thresholdVals = thresholdSlider.getValues()
+            minThreshold = int(thresholdVals[0])
+            maxThreshold = int(thresholdVals[1])
+            colormap = clicked.get()
+            global contractions
+            signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get(), detected_events=contractions)
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
 
     def detectEventsPressed():
         try:
@@ -117,7 +117,7 @@ def main():
             slidervals = visibleSensorSlider.getValues()
             first_sensor = int(slidervals[0])
             last_sensor = int(slidervals[1])
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 10,amount_of_sensors=2,amount_overlapped=1)
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 20,amount_of_sensors=2,amount_overlapped=1)
             contractions = detection.find_contractions_from_patterns(results, 5)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
@@ -128,12 +128,17 @@ def main():
         contractions = []
     
     def ExportFindings():
-        print(fileTitle.get())
+        try:
+            global valuesDict
+            valuesDict
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
         title = str(fileTitle.get()).split('/')[-1]
         title = title.split('.')[0]
         #print(title)
         exportlist = []
         export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), exportlist, commentsDict)
+        messagebox.showinfo("detection", "Exported files!")
 
     def placeComment():
         global commentsDict
@@ -151,6 +156,7 @@ def main():
     root.title("ManoMap Remake")
 
     line_opacity = tk.DoubleVar(value=0.7)
+
 
     notebook = ttk.Notebook()
     main_tab = ttk.Frame(notebook)
@@ -334,18 +340,18 @@ def main():
     thresholdSlider.pack()
 
     analysisStartTime = tk.StringVar()
-    label = tk.Label(settings_frame, textvariable=analysisStartTime)
+    starttime_label = tk.Label(settings_frame, textvariable=analysisStartTime)
     analysisStartTime.set("Start time of analysis (HH:MM:SS):")
-    label.pack()
+    starttime_label.pack()
     startTimeText = tk.Text(settings_frame, height=1, width=30)
     startTimeText.pack()
 
     timecommentBundle = tk.Frame(settings_frame)
     timecommentBundle.pack(padx=20, pady=20)
     timeAndCommentText = tk.StringVar()
-    label = tk.Label(timecommentBundle, textvariable=timeAndCommentText)
+    time_comment_label = tk.Label(timecommentBundle, textvariable=timeAndCommentText)
     timeAndCommentText.set("Time & Comment: (HH:MM:SS)")
-    label.pack()
+    time_comment_label.pack()
     timeText = tk.Text(timecommentBundle, height=1, width=10)
     timeText.pack(side=tk.LEFT)
     commentText = tk.Text(timecommentBundle, height=1, width=50)
@@ -356,9 +362,9 @@ def main():
 
     # data frame
     data_title = tk.StringVar()
-    label = tk.Label(data_frame, textvariable=data_title, font=("Helvetica", 16, "underline"))
+    data_label = tk.Label(data_frame, textvariable=data_title, font=("Helvetica", 16, "underline"))
     data_title.set("Data")
-    label.pack()
+    data_label.pack()
 
 
     file_button = tk.Button(data_frame, text="Select Input File", command=openFile)
@@ -377,7 +383,7 @@ def main():
     clearButton = tk.Button(data_frame, text="Clear Events", command=clearEventsPressed)
     clearButton.pack(pady=10, padx=10)
 
-    exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
+    exportButton = tk.Button(data_frame, text="Export Data", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
 
     def add_settings_var(root, name, steps=1,minimum=0,maximum=100, val=1):
@@ -400,11 +406,10 @@ def main():
 
     #ADVANCED SETTINGS
 
-
-    label = tk.Label(advanced_settings, textvariable=data_title, font=("Helvetica", 16, "underline"))
-    data_title.set("Advanced Settings")
-    data_title = tk.StringVar()
-    label.pack()
+    advanced_title = tk.StringVar()
+    advanced_title.set("Advanced Settings")
+    advanced_label = tk.Label(advanced_settings, textvariable=advanced_title, font=("Helvetica", 16, "underline"))
+    advanced_label.pack()
 
     theme_frame = tk.Frame(advanced_settings, borderwidth=10)
     options = [
@@ -428,9 +433,9 @@ def main():
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
 
     distanceText = tk.StringVar()
-    label = tk.Label(advanced_settings, textvariable=distanceText)
+    distance_label = tk.Label(advanced_settings, textvariable=distanceText)
     distanceText.set("Distance between sensors: (cm)")
-    label.pack()
+    distance_label.pack()
 
     inputtxt = tk.Text(advanced_settings, height=1, width=30)
     inputtxt.pack()
