@@ -47,8 +47,6 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
     data = valuesDict
     granulariteit = manoutils.get_granularity_factor()
 
-    print(detected_events[0])
-
     x_values = list(data.keys())
     tmp = []
     for val in x_values:
