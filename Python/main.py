@@ -136,6 +136,7 @@ def main():
         #print(title)
         exportlist = []
         export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), exportlist, commentsDict)
+        messagebox.showinfo("detection", "Exported files!")
 
     def placeComment():
         global commentsDict
