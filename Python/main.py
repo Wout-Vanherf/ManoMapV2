@@ -117,7 +117,9 @@ def main():
             slidervals = visibleSensorSlider.getValues()
             first_sensor = int(slidervals[0])
             last_sensor = int(slidervals[1])
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 20,amount_of_sensors=2,amount_overlapped=1)
+            print(amountOfSensors.get())
+            print(amountOverlapped.get())
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 20,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 5)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
@@ -156,7 +158,10 @@ def main():
     root.title("ManoMap Remake")
 
     line_opacity = tk.DoubleVar(value=0.7)
-
+    granularity = tk.DoubleVar(value=1)
+    amountOfSensors = tk.IntVar(value=3)
+    amountOverlapped = tk.DoubleVar(value=2)
+    distance = tk.DoubleVar(value=2)
 
     notebook = ttk.Notebook()
     main_tab = ttk.Frame(notebook)
@@ -431,14 +436,14 @@ def main():
     theme_frame.pack(side="bottom")
 
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
-
-    distanceText = tk.StringVar()
-    distance_label = tk.Label(advanced_settings, textvariable=distanceText)
-    distanceText.set("Distance between sensors: (cm)")
-    distance_label.pack()
-
-    inputtxt = tk.Text(advanced_settings, height=1, width=30)
-    inputtxt.pack()
+    granularity =  add_settings_var(advanced_settings, "Granularity",minimum=1, maximum=100,steps=1,val=1)
+    amountOfSensors = add_settings_var(advanced_settings,"Amount of sensors",minimum=2, maximum=7,steps=1,val=3)
+    amountOverlapped = add_settings_var(advanced_settings,"Amount of overlapped sensors",minimum=1, maximum=7,steps=1,val=2)
+    distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=2)
+    def updateGran(I, was, crazyonce):
+        manoutils.granularity_factor = int(granularity.get())
+        print(manoutils.granularity_factor)
+    granularity.trace("w", updateGran) 
 
     root.mainloop()
 
