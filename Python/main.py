@@ -93,19 +93,19 @@ def main():
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
     def showSignalsPressed():
-
-        global commentsDict
-        slidervals = visibleSensorSlider.getValues()
-        first_sensor = int(slidervals[0])
-        last_sensor = int(slidervals[1])
-        thresholdVals = thresholdSlider.getValues()
-        minThreshold = int(thresholdVals[0])
-        maxThreshold = int(thresholdVals[1])
-        colormap = clicked.get()
-        global contractions
-        signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get(), detected_events=contractions)
-        # except NameError:
-         #   messagebox.showinfo("Error", "Please select a file.")
+        try:
+            global commentsDict
+            slidervals = visibleSensorSlider.getValues()
+            first_sensor = int(slidervals[0])
+            last_sensor = int(slidervals[1])
+            thresholdVals = thresholdSlider.getValues()
+            minThreshold = int(thresholdVals[0])
+            maxThreshold = int(thresholdVals[1])
+            colormap = clicked.get()
+            global contractions
+            signalplot.show_combined_plot(manoutils.data_preperation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=line_opacity.get(), detected_events=contractions)
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
 
     def detectEventsPressed():
         try:
@@ -126,7 +126,11 @@ def main():
         contractions = []
     
     def ExportFindings():
-        print(fileTitle.get())
+        try:
+            global valuesDict
+            valuesDict
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
         title = str(fileTitle.get()).split('/')[-1]
         title = title.split('.')[0]
         #print(title)
@@ -376,7 +380,7 @@ def main():
     clearButton = tk.Button(data_frame, text="Clear Events", command=clearEventsPressed)
     clearButton.pack(pady=10, padx=10)
 
-    exportButton = tk.Button(data_frame, text="ExportData", command=ExportFindings)
+    exportButton = tk.Button(data_frame, text="Export Data", command=ExportFindings)
     exportButton.pack(pady=10, padx=10)
 
     def add_settings_var(root, name, steps=1,minimum=0,maximum=100, val=1):
