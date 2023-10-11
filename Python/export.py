@@ -8,8 +8,6 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
     ]
-#also export to csv
-    exportToCsv(data, name)
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
@@ -45,7 +43,8 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
         maxAmp = max(max_y_values)
         contract = [manoutils.convertTimeToText(manoutils.get_granularity_factor() * line['measure_number']), 'Ant/Retr', maxAmp, 'velocity', line['sequences'][0][0][0], line['sequences'][-1][-1][0], line['length']]
         contractions.append(contract)
-    print(contractions[0])
+    #also export to csv
+    exportToCsv(contractions, name)
 #try to add comments to data
     try:
 #converts commentsDict to list, adds them to the data, then sorts it by time
