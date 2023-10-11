@@ -47,9 +47,6 @@ def main():
 
             deny_button = tk.Button(popup, text="No", command=keepComments)
             deny_button.pack()
-
-            #deleteComments()
-            #messagebox.showinfo("Clear comments", "You still have saved comments, do you wish to delete them?")
         else:
             try:
                 global valuesDict
@@ -122,6 +119,8 @@ def main():
             results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 20,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 5)
             messagebox.showinfo("detection", "detection completed!")
+            
+            print(contractions[-2:])
         except NameError:
                 messagebox.showinfo("Error", "Please select a file.")
 
@@ -137,16 +136,13 @@ def main():
             messagebox.showinfo("Error", "Please select a file.")
         title = str(fileTitle.get()).split('/')[-1]
         title = title.split('.')[0]
-        #print(title)
-        exportlist = []
-        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), exportlist, commentsDict)
+        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions, commentsDict)
         messagebox.showinfo("detection", "Exported files!")
 
     def placeComment():
         global commentsDict
         time = timeText.get("1.0", "end-1c")
         comment = commentText.get("1.0", "end-1c")
-        #print(str(manoutils.validateTime(time))+ " " + time+ " "+ comment)
         if manoutils.validateTime(time):
             commentsDict[manoutils.convertTime(time)] = comment
         else:
