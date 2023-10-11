@@ -5,11 +5,9 @@ import csv
 import manoutils
 
 def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict):
-#also export to csv
     header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
     ]
-    exportToCsv(data, name)
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
@@ -36,17 +34,28 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     while not startRectum + count > endRectum:
         header[0].append('Rectum' + str(startRectum + count))
         count += 1
+#try to adapt data to header format
+    contractions = []
+    for line in data:
+        max_y_values = []
+        for entry in line['sequences']:
+            max_y_values.append(max(entry, key=lambda x: x[1])[1])
+        maxAmp = max(max_y_values)
+        contract = [manoutils.convertTimeToText(manoutils.get_granularity_factor() * line['measure_number']), 'Ant/Retr', maxAmp, 'velocity', line['sequences'][0][0][0], line['sequences'][-1][-1][0], line['length']]
+        contractions.append(contract)
+    #also export to csv
+    exportToCsv(contractions, name)
 #try to add comments to data
     try:
 #converts commentsDict to list, adds them to the data, then sorts it by time
         commentsList = [[manoutils.convertTimeToText(key), value] for key, value in commentsDict.items()]
-        data += commentsList
-        data = sorted(data, key=lambda x: x[0])
+        contractions += commentsList
+        contractions = sorted(contractions, key=lambda x: x[0])
     except:
         print("error in comments toevoegen")
 #try to append data to the header
     try:
-        for line in data:
+        for line in contractions:
             header.append(line)
     except:
         print("error in datalijn toevoegen")    
@@ -68,7 +77,7 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
 
 #color the regions to distinguish them
     fill = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")
-    for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=headerSize, max_col=stopAsc):
+    for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=headerSize+1, max_col=stopAsc):
         for cell in row:
             cell.fill = fill
 
