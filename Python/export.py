@@ -4,7 +4,7 @@ import csv
 
 import manoutils
 
-def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict):
+def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict, distance=3):
     header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
     ]
@@ -37,11 +37,18 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
 #try to adapt data to header format
     contractions = []
     for line in data:
+        #calculate max amplitude
         max_y_values = []
         for entry in line['sequences']:
             max_y_values.append(max(entry, key=lambda x: x[1])[1])
         maxAmp = max(max_y_values)
-        contract = [manoutils.convertTimeToText(manoutils.get_granularity_factor() * line['measure_number']), 'Ant/Retr', maxAmp, 'velocity', line['sequences'][0][0][0], line['sequences'][-1][-1][0], line['length']]
+        #calculate velocity
+        gran = manoutils.get_granularity_factor()
+        print(gran)
+        time = gran * len(line['sequences'])
+        #last sensor - first * distance between each sensor = total distance, time is in decaseconds => *10
+        velocity = (line['sequences'][-1][-1][0] - line['sequences'][0][0][0])*distance/time*10
+        contract = [manoutils.convertTimeToText(manoutils.get_granularity_factor() * line['measure_number']), 'Ant/Retr', maxAmp,  str(velocity) + 'cm/s', line['sequences'][0][0][0], line['sequences'][-1][-1][0], line['length']]
         contractions.append(contract)
     #also export to csv
     exportToCsv(contractions, name)
@@ -124,14 +131,3 @@ def exportToCsv(data, filename):
         csv_writer = csv.writer(csv_file)
         for row in data:
             csv_writer.writerow(row)
-
-if __name__ == '__main__':
-    #elke regio is 1 lang => nooit dubbel in xlsx
-    comments = dict()
-    comments[10] = "t"
-    data = [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]]
-
-    createExcelWorkBook('test',1,5,6,7,8,8, [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]],comments)
-    
-    #filename = 'test2'
-    #exportToCsv(data, filename)
