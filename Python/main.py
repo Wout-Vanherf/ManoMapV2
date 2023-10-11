@@ -116,7 +116,7 @@ def main():
             last_sensor = int(slidervals[1])
             print(amountOfSensors.get())
             print(amountOverlapped.get())
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 20,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 10,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 5)
             messagebox.showinfo("detection", "detection completed!")
             

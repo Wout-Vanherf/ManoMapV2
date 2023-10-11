@@ -28,7 +28,7 @@ def draw_direct(xvals, yvals):
     for i in range(len(xvals[:-1])):
         x_values = [xvals[i], xvals[i+1]]
         y_values = [yvals[i], yvals[i+1]]
-        plt.plot(x_values, y_values, 'bo', linestyle="--")
+        plt.plot(x_values, y_values, "b", linestyle="--")
 
 
 
@@ -134,7 +134,7 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
                 x_values.append(x)
                 y_values.append(y)
 
-                plt.scatter(x, y, color = 'red',marker ='x')
+                plt.scatter(x, y, color= 'red',marker ='x')
 
             x_values,y_values = ysort(x_values, y_values)
             if draw_method == "bezier":
