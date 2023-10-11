@@ -117,8 +117,8 @@ def main():
             slidervals = visibleSensorSlider.getValues()
             first_sensor = int(slidervals[0])
             last_sensor = int(slidervals[1])
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 20,amount_of_sensors=2,amount_overlapped=1)
-            contractions = detection.find_contractions_from_patterns(results, 5)
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 10, amount_of_sensors=2,amount_overlapped=1)
+            contractions = detection.find_contractions_from_patterns(results, 3)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
                 messagebox.showinfo("Error", "Please select a file.")
