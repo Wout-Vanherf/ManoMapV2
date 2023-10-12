@@ -8,14 +8,33 @@ contractionsList = [{'length': 54, 'measure_number': 9099, 'sequences': [[(32, 2
     ]"""
 distance = 3
 contractions = []
+first = 1
+last = 1
 for line in contractionsList:
     max_y_values = []
+    contractionsDict = dict()
     for entry in line['sequences']:
         max_y_values.append(max(entry, key=lambda x: x[1])[1])
+        for point in entry:    
+            try:
+                if contractionsDict[point[0]] < point[1]:
+                    contractionsDict[point[0]] = point[1]
+            except:
+                contractionsDict[point[0]] = point[1]
     maxAmp = max(max_y_values)
     gran = manoutils.get_granularity_factor()
     time = gran * len(line['sequences'])
     velocity = (line['sequences'][-1][-1][0] - line['sequences'][0][0][0])*distance/time*10
+
     contract = [manoutils.convertTimeToText(manoutils.get_granularity_factor() * line['measure_number']), 'Ant/Retr', maxAmp, str(velocity) + 'cm/s', line['sequences'][0][0][0], line['sequences'][-1][-1][0], line['length']]
+    count = first
+    while count -1 < last:
+        try:
+            contract.append(contractionsDict[count])
+        except:
+            contract.append(None)
+        count += 1
+
     contractions.append(contract)
 print(contractions)
+#print(contractionsDict)
