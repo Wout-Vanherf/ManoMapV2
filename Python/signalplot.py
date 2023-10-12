@@ -94,7 +94,11 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
 
     for entry in commentsDict:
         #print(tick_locations[0])
-        plt.annotate(commentsDict[entry], xy=(entry, tick_locations[0]*-5 +140), xytext=(entry + 1, tick_locations[0]*-5 +140),color='black')
+        x_position = entry / manoutils.get_granularity_factor()
+        y_position = 1  # Adjust the y-position as needed to place comments above the heatmap
+        annotation_text = commentsDict[entry]
+        plt.annotate(annotation_text, xy=(0,0), xytext=(x_position, tick_locations[0]*-5 +140),color='black')
+        #plt.annotate(commentsDict[entry], xy=(entry, tick_locations[0]*-5 +140), xytext=(entry + 1, tick_locations[0]*-5 +140),color='black')
 
     if detected_events != "":
         for contraction in detected_events:
