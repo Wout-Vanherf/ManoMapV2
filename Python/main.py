@@ -134,7 +134,8 @@ def main():
             messagebox.showinfo("Error", "Please select a file.")
         title = str(fileTitle.get()).split('/')[-1]
         title = title.split('.')[0]
-        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions, commentsDict)
+        afstand = int(distance.get())
+        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions, commentsDict, afstand)
         messagebox.showinfo("detection", "Exported files!")
 
     def placeComment():
@@ -149,7 +150,7 @@ def main():
         commentText.delete("1.0", "end")
 
     root = tk.Tk()
-    root.title("ManoMap Remake")
+    root.title("PressurePal")
 
     line_opacity = tk.DoubleVar(value=0.7)
     granularity = tk.DoubleVar(value=1)
@@ -433,7 +434,7 @@ def main():
     granularity =  add_settings_var(advanced_settings, "Granularity",minimum=1, maximum=100,steps=1,val=1)
     amountOfSensors = add_settings_var(advanced_settings,"Amount of sensors",minimum=2, maximum=7,steps=1,val=3)
     amountOverlapped = add_settings_var(advanced_settings,"Amount of overlapped sensors",minimum=1, maximum=7,steps=1,val=2)
-    distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=2)
+    distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=3)
     def updateGran(I, was, crazyonce):
         manoutils.granularity_factor = int(granularity.get())
         print(manoutils.granularity_factor)

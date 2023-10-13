@@ -4,9 +4,9 @@ import csv
 
 import manoutils
 
-def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict):
+def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict, distance):
     header = [
-    ['Time', 'Ant/Retr', 'Amplitude', 'Velocity', 'startSensor', 'endSensor', 'lengthContraction']
+    ['Time', 'Ant/Retr', 'Amplitude', 'Velocity mm/s', 'startSensor', 'endSensor', 'lengthContraction']
     ]
 # Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
@@ -36,12 +36,41 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
         count += 1
 #try to adapt data to header format
     contractions = []
+    contractionsDict = dict()
     for line in data:
+        #calculate max amplitude
         max_y_values = []
         for entry in line['sequences']:
             max_y_values.append(max(entry, key=lambda x: x[1])[1])
+            #make a dict with amp per sensor
+            for point in entry:    
+                try:
+                    if contractionsDict[point[0]] < point[1]:
+                        contractionsDict[point[0]] = point[1]
+                except:
+                    contractionsDict[point[0]] = point[1]
         maxAmp = max(max_y_values)
-        contract = [manoutils.convertTimeToText(manoutils.get_granularity_factor() * line['measure_number']), 'Ant/Retr', maxAmp, 'velocity', line['sequences'][0][0][0], line['sequences'][-1][-1][0], line['length']]
+        #calculate velocity
+        gran = manoutils.get_granularity_factor()
+        time = gran * len(line['sequences'])
+        #last sensor - first * distance between each sensor = total distance, time is in decaseconds => *10, distance in mm => *10
+        velocity = (line['sequences'][-1][-1][0] - line['sequences'][0][0][0])*distance/time*100
+        #decide ant/retr
+        if(velocity > 0):
+            direction = 'Ant'
+        else:
+            direction = 'Retr'
+        startSensor = line['sequences'][0][0][0]
+        endSensor = line['sequences'][-1][-1][0]
+        contract = [manoutils.convertTimeToText(manoutils.get_granularity_factor() * line['measure_number']), direction, maxAmp, velocity, startSensor, endSensor, line['length']]
+        count = startAscending - 1
+        #add none/amplitude per sensor
+        while count < endRectum:
+            try:
+                contract.append(contractionsDict[count])
+            except:
+                contract.append(None)
+            count += 1
         contractions.append(contract)
     #also export to csv
     exportToCsv(contractions, name)
@@ -109,8 +138,6 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     for row in worksheet.iter_rows(min_row=0, values_only=True):
         rownumber += 1
         if row[2] is None:
-            #print(row)
-            #print(rownumber)
             for row in worksheet.iter_rows(min_row=rownumber, max_row=rownumber, min_col=0, max_col=2):
                 for cell in row:
                     cell.fill = fill
@@ -124,14 +151,3 @@ def exportToCsv(data, filename):
         csv_writer = csv.writer(csv_file)
         for row in data:
             csv_writer.writerow(row)
-
-if __name__ == '__main__':
-    #elke regio is 1 lang => nooit dubbel in xlsx
-    comments = dict()
-    comments[10] = "t"
-    data = [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]]
-
-    createExcelWorkBook('test',1,5,6,7,8,8, [["00:00:01","A",10,1,1,5,4,10,10,10,10,0,0,0,0],["00:00:02","A",10,1,1,5,4,10,10,10,10,0,0,0,0]],comments)
-    
-    #filename = 'test2'
-    #exportToCsv(data, filename)
