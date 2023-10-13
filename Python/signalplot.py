@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import manoutils
+import main
+
+
 
 def ysort(xvals, yvals):
     if len(xvals) != len(yvals):
@@ -43,7 +46,9 @@ def draw_bezier(x_values, y_values):
         curve_y.append(cubic_bezier(t, y_values))
     plt.plot(curve_x, curve_y, color='blue', linestyle='--')
 
-def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, opacity=1, colormap='inferno', detected_events="", draw_method="bezier"):
+def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, opacity=1, colormap='inferno', detected_events="", draw_method="bezier", exportDataXml = []):
+    contractions_for_export = []
+
     data = valuesDict
     granulariteit = manoutils.get_granularity_factor()
 
@@ -128,6 +133,7 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
             #plot all max pressure points.
             x_values = []
             y_values = []
+            xml_export_data = {}
             for sensor in max_pressure_per_sensor_with_counter:
                 max_pressure, max_sequence_number = max_pressure_per_sensor_with_counter[sensor]
                 #print("sensor:", sensor, "max_pressure: ",max_pressure,"max_sequence_number: ", max_sequence_number)
@@ -140,15 +146,20 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
 
                 plt.scatter(x, y, color= 'red',marker ='x')
 
+                #sensor -1 because plotHRM starts with channel 0
+                xml_export_data[sensor -1 ] = {'maxSample': x, 'maxValue': max_pressure}
+            contractions_for_export.append(xml_export_data)
             x_values,y_values = ysort(x_values, y_values)
             if draw_method == "bezier":
                 draw_bezier(x_values, y_values)
             if draw_method == "direct":
                 draw_direct(x_values, y_values)
 
+    #exportDataXml = contractions_for_export
+    for val in contractions_for_export:
+        exportDataXml.append(val)
+    print("exportDataXml vanuit signalplot: ", exportDataXml)
     plt.show()
-
-
 
 
 
