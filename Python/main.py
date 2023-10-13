@@ -142,6 +142,7 @@ def main():
         afstand = int(distance.get())
         export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions, commentsDict, afstand)
         messagebox.showinfo("detection", "Exported files!")
+
     def exportToXML():
         try:
             exportTitle = fileTitle.get() + "automated_detection_to_xml.txt"
@@ -150,40 +151,41 @@ def main():
             messagebox.showinfo("Error", "Please select a file.")
 
         global exportDataXml
-        print ("exportDataXml: ", exportDataXml)
-        for contraction in exportDataXml:
-            sequencesTXT = ""
-            #print("----------------------------------------------- contraction")
-            channelValues= list(contraction.keys())
-            maxSampleValues = []
-            for sensor in contraction.values():
-                maxSampleValues.append(sensor['maxSample'])
+        print("exportDataXml: ", exportDataXml)
 
-            startSample = str(min(maxSampleValues))
-            endSample = str(max(maxSampleValues))
-            startChannel = str(min(channelValues))
-            endChannel = str(max(channelValues))
-            sequenceHeader = '<sequence startSample="'+ startSample + '" endSample="' + endSample+ '" startChannel="' + startChannel + '" endChannel="' + endChannel + '">'
-            sequencesTXT+= sequenceHeader
-            for item in contraction:
-                point = '<range channel="' + str(item) + '" maxSample="'+  str(contraction[item]['maxSample'])+ '"/>'
-                sequencesTXT += "\n"
-                sequencesTXT += "\t" + point
-            sequencesTXT += "\n"+'</sequence>'
-            #print(exportDataXml)
-            #print(sequencesTXT)
-            #main.setContractionsForExport(sequencesTXT)
-        XML_text = sequencesTXT
+        XML = data_to_XML(exportDataXml)
+
         with open(exportTitle, 'w') as outputfile:
             outputfile.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
             outputfile.write("\n")
             outputfile.write('<sequences>')
             outputfile.write("\n")
-            outputfile.write(XML_text)
+            outputfile.write(XML)
             outputfile.write("\n")
             outputfile.write('</sequences>')
-        print(XML_text)
         print("succesful export to XML")
+
+    def data_to_XML(data):
+        sequencesTXT = ""
+        for contraction in data:
+            channelValues= list(contraction.keys())
+            maxSampleValues = []
+            for sensor in contraction.values():
+                maxSampleValues.append(sensor['maxSample'])
+
+            startSample = str(int(min(maxSampleValues) * 10))
+            endSample = str(int(max(maxSampleValues) * 10))
+            startChannel = str(min(channelValues))
+            endChannel = str(max(channelValues))
+            sequenceHeader = '<sequence startSample="'+ startSample + '" endSample="' + endSample+ '" startChannel="' + startChannel + '" endChannel="' + endChannel + '">'
+            sequencesTXT+= sequenceHeader
+            for item in contraction:
+                point = '<range channel="' + str(item) + '" maxSample="'+  str(int(contraction[item]['maxSample'] * 10))+ '"/>'
+                sequencesTXT += "\n"
+                sequencesTXT += "\t" + point
+            sequencesTXT += "\n"+'</sequence>'
+        return sequencesTXT
+
 
 
     def placeComment():

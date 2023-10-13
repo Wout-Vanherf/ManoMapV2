@@ -12,7 +12,7 @@ def get_granularity_factor():
 def CSVToDict(file):
     out = dict()
     with open(file) as csvfile:
-        rdr = csv.reader(csvfile, delimiter=',', quotechar='|')
+        rdr = csv.reader(csvfile, delimiter=' ', quotechar='|')
         rownumber = 1
         for row in rdr:
             rownumber+=1
