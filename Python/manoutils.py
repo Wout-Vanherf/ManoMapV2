@@ -3,7 +3,7 @@ import numpy as np
 from scipy.signal import savgol_filter, wiener
 
 global granularity_factor
-granularity_factor=5
+granularity_factor=1
 
 def get_granularity_factor():
     return granularity_factor
@@ -12,7 +12,7 @@ def get_granularity_factor():
 def CSVToDict(file):
     out = dict()
     with open(file) as csvfile:
-        rdr = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        rdr = csv.reader(csvfile, delimiter=',', quotechar='|')
         rownumber = 1
         for row in rdr:
             rownumber+=1

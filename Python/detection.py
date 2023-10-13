@@ -132,7 +132,7 @@ def find_contraction_length(pattern_results, pair, length, rowindex, sequences=[
 
 # Calls the find_contraction_from_mattern on all the pattern results, filtering all the contractions that are shorter
 # than "contraction_length".
-def find_contractions_from_patterns(pattern_results, contraction_length):
+def find_contractions_from_patterns(pattern_results, contraction_length, filterOutTwos=True):
     contractions = []
     for rowindex in range(len(pattern_results)):
         for pair in pattern_results[rowindex]:
@@ -149,17 +149,18 @@ def find_contractions_from_patterns(pattern_results, contraction_length):
             seqs.append(seq["sensors"])
         c["sequences"] = seqs
 
-    sizeMatters = []
-    for c in contractions:
-        available_sensors = set()
-        for seq in c["sequences"]:
-            for val in seq:
-                available_sensors.add(val[0])
-        if len(available_sensors) == 2:
-            sizeMatters.append(c)
+    if filterOutTwos:
+        sizeMatters = []
+        for c in contractions:
+            available_sensors = set()
+            for seq in c["sequences"]:
+                for val in seq:
+                    available_sensors.add(val[0])
+            if len(available_sensors) == 2:
+                sizeMatters.append(c)
 
-    for tooShort in sizeMatters:
-        contractions.remove(tooShort)
+        for tooShort in sizeMatters:
+            contractions.remove(tooShort)
     return contractions
 
 
