@@ -150,7 +150,7 @@ def main():
         commentText.delete("1.0", "end")
 
     root = tk.Tk()
-    root.title("ManoMap Remake")
+    root.title("PressurePal")
 
     line_opacity = tk.DoubleVar(value=0.7)
     granularity = tk.DoubleVar(value=1)
