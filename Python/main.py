@@ -137,8 +137,8 @@ def main():
             valuesDict
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
-        title = str(fileTitle.get()).split('/')[-1]
-        title = title.split('.')[0]
+        title = str(fileTitle.get()).split('.')[0]
+        #title = title.split('.')[0]
         afstand = int(distance.get())
         export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions, commentsDict, afstand)
         messagebox.showinfo("detection", "Exported files!")
