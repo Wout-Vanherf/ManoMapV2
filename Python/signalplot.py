@@ -5,7 +5,6 @@ from datetime import timedelta
 import main
 
 
-
 def ysort(xvals, yvals):
     if len(xvals) != len(yvals):
         raise ValueError("Dimension mismatch")
@@ -28,12 +27,12 @@ def cubic_bezier(t, control_points):
         result += control_points[i] * np.math.comb(n - 1, i) * (1 - t) ** (n - 1 - i) * t ** i
     return result
 
+
 def draw_direct(xvals, yvals):
     for i in range(len(xvals[:-1])):
         x_values = [xvals[i], xvals[i+1]]
         y_values = [yvals[i], yvals[i+1]]
         plt.plot(x_values, y_values, "b", linestyle="--")
-
 
 
 def draw_bezier(x_values, y_values):
@@ -46,6 +45,7 @@ def draw_bezier(x_values, y_values):
         curve_x.append(cubic_bezier(t, x_values))
         curve_y.append(cubic_bezier(t, y_values))
     plt.plot(curve_x, curve_y, color='blue', linestyle='--')
+
 
 def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, opacity=1, colormap='inferno', detected_events="", draw_method="bezier", exportDataXml = []):
     contractions_for_export = []
@@ -60,7 +60,6 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
     x_values = tmp
     amount_of_sensors = last_sensor - first_sensor + 1
     y_offset = 100
-    y_offset2 = y_offset
     scaling_factor = 0.1
     plt.figure().set_figheight(10.0)
     laatste_kleur =0.1
@@ -77,39 +76,36 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
         graphColor = plt.get_cmap(colormap)(laatste_kleur)
         graphColor = (graphColor[0],graphColor[1],graphColor[2], opacity)
         if colormap == "Greys":
-            graphColor=(0.3,0.3,0.3, opacity)
+            graphColor = (0.3, 0.3, 0.3, opacity)
         plt.plot(x_values, y_values, label='sensor ' + str(x), linewidth=0.5, color= graphColor)
-        y_offset -= 5  # Increment Y offset for the next sensor
-        laatste_kleur+= 1/(amount_of_sensors + 30)
-    #print("offsets_per_sensor", offsets_per_sensor)
+        y_offset -= 5
+        laatste_kleur += 1/(amount_of_sensors + 30)
     plt.xlabel('time (Seconds)', fontsize=10)
     plt.ylabel('Sensor Number', fontsize=10)
     plt.xticks(fontsize=8)
+
 # Adjust the y-axis ticks with custom tick locations and labels
-    if(first_sensor==0):
+    if(first_sensor == 0):
         tick_locations = np.arange(1, amount_of_sensors + 1)
-        tick_labels = [str(i + first_sensor) for i in tick_locations]  # Convert tick locations to string labels
+        tick_labels = [str(i + first_sensor) for i in tick_locations]
     else:
         tick_locations = np.arange(1, amount_of_sensors + 1)
-        tick_labels = [str(i + first_sensor -1 ) for i in tick_locations]
+        tick_labels = [str(i + first_sensor -1) for i in tick_locations]
 
-    plt.yticks(tick_locations*-5 +105 , tick_labels, fontsize=8)
-    plt.xlim(0, x_values[-1])  # Set the x-axis limits
+    plt.yticks(tick_locations*-5 + 105, tick_labels, fontsize=8)
+    plt.xlim(0, x_values[-1])
 
     plt.gca().set_aspect('auto', adjustable='box')
 
     for entry in commentsDict:
-        #print(tick_locations[0])
-        x_position = entry / manoutils.get_granularity_factor()
-        y_position = 1  # Adjust the y-position as needed to place comments above the heatmap
+        x_position = entry / 10  # <- echt geen idee waarom dit /10 moet, maar anders klopt het niet
+        print(x_position)
         annotation_text = commentsDict[entry]
         plt.annotate(annotation_text, xy=(0,0), xytext=(x_position, tick_locations[0]*-5 +140),color='black')
-        #plt.annotate(commentsDict[entry], xy=(entry, tick_locations[0]*-5 +140), xytext=(entry + 1, tick_locations[0]*-5 +140),color='black')
 
     if detected_events != "":
         for contraction in detected_events:
             pressure_per_sensor_dict = {}
-            contraction_length = contraction["length"]
             measurement_number = contraction["measure_number"]
             sequence_counter = 0
             for sequence in contraction["sequences"]:
@@ -123,49 +119,39 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
                         pressure_per_sensor_dict[sensor_number][sequence_counter] = pressure_data
                     else:
                         pressure_per_sensor_dict[sensor_number][sequence_counter] = pressure_data
-            #print("pressure_per_sensor_dict: ", pressure_per_sensor_dict)
             max_pressure_per_sensor_with_counter = {}
             for sensor, measurements in pressure_per_sensor_dict.items():
                 max_pressure = max(measurements.values())
                 max_sequence_number = max(measurements, key=measurements.get)
                 max_pressure_per_sensor_with_counter[sensor] = [max_pressure, max_sequence_number]
 
-            #print("max_pressure_per_sensor_with_counter: ",max_pressure_per_sensor_with_counter)
             #plot all max pressure points.
             x_values = []
             y_values = []
             xml_export_data = {}
             for sensor in max_pressure_per_sensor_with_counter:
                 max_pressure, max_sequence_number = max_pressure_per_sensor_with_counter[sensor]
-                #print("sensor:", sensor, "max_pressure: ",max_pressure,"max_sequence_number: ", max_sequence_number)
 
-                x = ((measurement_number + max_sequence_number) * granulariteit * scaling_factor - granulariteit*scaling_factor)
+                x = ((measurement_number + max_sequence_number) * granulariteit * scaling_factor - granulariteit * scaling_factor)
                 y = (max_pressure - minThreshold) * scaling_factor + offsets_per_sensor[sensor -1]
-                #print("x: ", x, "y:", y)
                 x_values.append(x)
                 y_values.append(y)
 
                 plt.scatter(x, y, color= 'red',marker ='x')
 
-                #sensor -1 because plotHRM starts with channel 0
-                xml_export_data[sensor -1 ] = {'maxSample': x, 'maxValue': max_pressure}
+                # sensor -1 because plotHRM starts with channel 0
+                xml_export_data[sensor -1] = {'maxSample': x, 'maxValue': max_pressure}
             contractions_for_export.append(xml_export_data)
-            x_values,y_values = ysort(x_values, y_values)
+            x_values, y_values = ysort(x_values, y_values)
             if draw_method == "bezier":
                 draw_bezier(x_values, y_values)
             if draw_method == "direct":
                 draw_direct(x_values, y_values)
 
-    #exportDataXml = contractions_for_export
     for val in contractions_for_export:
         exportDataXml.append(val)
     print("exportDataXml vanuit signalplot: ", exportDataXml)
     plt.show()
-
-
-
-
-        ##########HIER NU PUNT PLOTTEN VOOR ROW SMALLEST SENSOR, ROW + LENGTH BIGGEST COMMON
 
 
 
