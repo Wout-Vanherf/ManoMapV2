@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import manoutils
+from datetime import timedelta
 import main
 
 
@@ -81,7 +82,7 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
         y_offset -= 5  # Increment Y offset for the next sensor
         laatste_kleur+= 1/(amount_of_sensors + 30)
     #print("offsets_per_sensor", offsets_per_sensor)
-    plt.xlabel('time (deciseconden)', fontsize=10)
+    plt.xlabel('time (Seconds)', fontsize=10)
     plt.ylabel('Sensor Number', fontsize=10)
     plt.xticks(fontsize=8)
 # Adjust the y-axis ticks with custom tick locations and labels
@@ -138,7 +139,7 @@ def show_combined_plot(valuesDict, commentsDict, first_sensor, last_sensor, minT
                 max_pressure, max_sequence_number = max_pressure_per_sensor_with_counter[sensor]
                 #print("sensor:", sensor, "max_pressure: ",max_pressure,"max_sequence_number: ", max_sequence_number)
 
-                x = (measurement_number + max_sequence_number) * granulariteit * scaling_factor - granulariteit*scaling_factor
+                x = ((measurement_number + max_sequence_number) * granulariteit * scaling_factor - granulariteit*scaling_factor)
                 y = (max_pressure - minThreshold) * scaling_factor + offsets_per_sensor[sensor -1]
                 #print("x: ", x, "y:", y)
                 x_values.append(x)
