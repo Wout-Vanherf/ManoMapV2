@@ -389,13 +389,6 @@ def main():
     thresholdSlider = RangeSliderH(settings_frame, [hVar3, hVar4], Height=65, padX=20, min_val=0, max_val=500, show_value=True, step_size=5, bar_radius=5, digit_precision='.0f')
     thresholdSlider.pack()
 
-    analysisStartTime = tk.StringVar()
-    starttime_label = tk.Label(settings_frame, textvariable=analysisStartTime)
-    analysisStartTime.set("Start time of analysis (HH:MM:SS):")
-    starttime_label.pack()
-    startTimeText = tk.Text(settings_frame, height=1, width=30)
-    startTimeText.pack()
-
     timecommentBundle = tk.Frame(settings_frame)
     timecommentBundle.pack(padx=20, pady=20)
     timeAndCommentText = tk.StringVar()

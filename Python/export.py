@@ -8,7 +8,6 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity mm/s', 'startSensor', 'endSensor', 'lengthContraction']
     ]
-# Create a new Excel workbook and add a worksheet
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
     worksheet.title = "Data"
