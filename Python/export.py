@@ -5,6 +5,8 @@ import csv
 import manoutils
 
 def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict, distance):
+    print(data)
+    
     header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity mm/s', 'startSensor', 'endSensor', 'lengthContraction']
     ]
@@ -37,8 +39,10 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     contractions = []
     contractionsDict = dict()
     for line in data:
+
         #calculate max amplitude
         max_y_values = []
+        contractionsDict = dict()
         for entry in line['sequences']:
             max_y_values.append(max(entry, key=lambda x: x[1])[1])
             #make a dict with amp per sensor
