@@ -15,7 +15,7 @@ global valuesDict
 global commentsDict
 global contractions
 global exportDataXml
-
+global detectionThreshold
 
 commentsDict = dict()
 contractions = []
@@ -113,15 +113,18 @@ def main():
         try:
             global valuesDict
             global contractions
+            
             thresholdVals = thresholdSlider.getValues()
             minThreshold = int(thresholdVals[0])
+            detectionThreshold.get()
             filedata = manoutils.data_preperation(valuesDict)
             slidervals = visibleSensorSlider.getValues()
             first_sensor = int(slidervals[0])
             last_sensor = int(slidervals[1])
             print(amountOfSensors.get())
             print(amountOverlapped.get())
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 20,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
+            #20 threshold is hardcoded
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 2)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
@@ -206,7 +209,7 @@ def main():
     granularity = tk.DoubleVar(value=1)
     amountOfSensors = tk.IntVar(value=3)
     amountOverlapped = tk.DoubleVar(value=2)
-    distance = tk.DoubleVar(value=2)
+    distance = tk.DoubleVar(value=2.5)
 
     notebook = ttk.Notebook()
     main_tab = ttk.Frame(notebook)
@@ -389,13 +392,6 @@ def main():
     thresholdSlider = RangeSliderH(settings_frame, [hVar3, hVar4], Height=65, padX=20, min_val=0, max_val=500, show_value=True, step_size=5, bar_radius=5, digit_precision='.0f')
     thresholdSlider.pack()
 
-    analysisStartTime = tk.StringVar()
-    starttime_label = tk.Label(settings_frame, textvariable=analysisStartTime)
-    analysisStartTime.set("Start time of analysis (HH:MM:SS):")
-    starttime_label.pack()
-    startTimeText = tk.Text(settings_frame, height=1, width=30)
-    startTimeText.pack()
-
     timecommentBundle = tk.Frame(settings_frame)
     timecommentBundle.pack(padx=20, pady=20)
     timeAndCommentText = tk.StringVar()
@@ -482,10 +478,11 @@ def main():
     theme_frame.pack(side="bottom")
 
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
+    detectionThreshold = add_settings_var(advanced_settings, "Detection Threshold",minimum=1, maximum=50,steps=1,val=10)
     granularity =  add_settings_var(advanced_settings, "Granularity",minimum=1, maximum=100,steps=1,val=1)
     amountOfSensors = add_settings_var(advanced_settings,"Amount of sensors",minimum=2, maximum=7,steps=1,val=3)
     amountOverlapped = add_settings_var(advanced_settings,"Amount of overlapped sensors",minimum=1, maximum=7,steps=1,val=2)
-    distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=3)
+    distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=2.5)
     def updateGran(I, was, crazyonce):
         manoutils.granularity_factor = int(granularity.get())
         print(manoutils.granularity_factor)

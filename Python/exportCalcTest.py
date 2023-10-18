@@ -44,12 +44,31 @@ for line in contractionsList:
 #print(contractions)
 
 
+contractions = []
+contractionsDict = dict()
+for line in contractionsList:
+        #calculate max amplitude
+    max_y_values = []
+    contractionsDict = dict()
+    print(len(max_y_values))
+    for entry in line['sequences']:
+        max_y_values.append(max(entry, key=lambda x: x[1])[1])
+        #make a dict with amp per sensor
+        for point in entry:    
+            try:
+                if contractionsDict[point[0]] < point[1]:
+                    contractionsDict[point[0]] = point[1]
+            except:
+                contractionsDict[point[0]] = point[1]
+    maxAmp = max(max_y_values)
+    print(contractionsDict)
+
 """<sequences>
         <range  channel="6" maxSample="145508" maxValue="17.38321"/>
         <range channel="7" maxSample="145522" maxValue="25.29626"/>
         <range channel="8"maxSample="145513" maxValue="24.287949"/>
     </sequence>"""
-
+"""
 max_values = []
 
 # for each contraction, check highest value per sensor and what time
@@ -67,6 +86,7 @@ for line in contractionsList:
     max_values.append(max_values_per_line)
 
 print(max_values)
+"""
 
 
 """
