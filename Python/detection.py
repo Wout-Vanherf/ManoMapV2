@@ -22,11 +22,6 @@ def matrix_print(m, title="matrix?"):
     print("")
 
 
-def find_patterns_from_values_dict(valuedict, first_sensor, last_sensor, threshold, amount_of_sensors=3, amount_overlapped=2):
-    data_dict = manoutils.transform_dict_per_timeframe_to_per_sensor(valuedict)
-    return find_pattern(data_dict, first_sensor, last_sensor, threshold, amount_of_sensors=amount_of_sensors, amount_overlapped=amount_overlapped)
-
-
 # scans every record for consecutive values that are above the threshold, if there are more than "amount_of_sensors"
 # values in a single record, it is considered a sequence
 def find_pattern(data_dict,
@@ -164,4 +159,8 @@ def find_contractions_from_patterns(pattern_results, contraction_length, filterO
     return contractions
 
 
+# MAIN FUNCTION OF FILE, THIS IS IS THE FUNCTION THAT WILL BE CALLED EXTERNALLY
+def find_patterns_from_values_dict(valuedict, first_sensor, last_sensor, threshold, amount_of_sensors=3, amount_overlapped=2):
+    data_dict = manoutils.transform_dict_per_timeframe_to_per_sensor(valuedict)
+    return find_pattern(data_dict, first_sensor, last_sensor, threshold, amount_of_sensors=amount_of_sensors, amount_overlapped=amount_overlapped)
 
