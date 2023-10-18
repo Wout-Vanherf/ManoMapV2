@@ -116,7 +116,6 @@ def main():
             
             thresholdVals = thresholdSlider.getValues()
             minThreshold = int(thresholdVals[0])
-            detectionThreshold.get()
             filedata = manoutils.data_preperation(valuesDict)
             slidervals = visibleSensorSlider.getValues()
             first_sensor = int(slidervals[0])
@@ -124,7 +123,7 @@ def main():
             print(amountOfSensors.get())
             print(amountOverlapped.get())
             #20 threshold is hardcoded
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold.get(),amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 2)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
