@@ -135,7 +135,7 @@ def main():
     def clearEventsPressed():
         global contractions
         contractions = []
-    
+
     def ExportFindings():
         try:
             global valuesDict
@@ -143,16 +143,23 @@ def main():
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
         title = str(fileTitle.get()).split('.')[0]
-        #title = title.split('.')[0]
         afstand = int(distance.get())
-        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions, commentsDict, afstand)
+
+        slidervals = visibleSensorSlider.getValues()
+        first_sensor = int(slidervals[0])
+        last_sensor = int(slidervals[1])
+
+        export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()),
+                                   int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions,
+                                   commentsDict, afstand, first_sensor, last_sensor)
         messagebox.showinfo("detection", "Exported files!")
 
     def filtered_txt_file(inputf, outputf):
         try:
             with open(inputf, 'r') as input_file, open(outputf, 'w') as output_file:
                 lines = input_file.readlines()
-                output_file.writelines(lines[10:])
+                filtered_lines = [line.replace(',', '') for line in lines[10:]]
+                output_file.writelines(filtered_lines)
         except FileNotFoundError:
             print(f"'{inputf}' not found.")
         except Exception as e:
@@ -166,7 +173,7 @@ def main():
     def exportToXML():
         also_export_a_txt()
         try:
-            exportTitle = fileTitle.get() + "automated_detection_to_xml.txt"
+            exportTitle = str(fileTitle.get()).split('.')[0] + "_sequences_data.txt"
             print(exportTitle)
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
