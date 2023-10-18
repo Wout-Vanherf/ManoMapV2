@@ -206,7 +206,7 @@ def main():
     granularity = tk.DoubleVar(value=1)
     amountOfSensors = tk.IntVar(value=3)
     amountOverlapped = tk.DoubleVar(value=2)
-    distance = tk.DoubleVar(value=2)
+    distance = tk.DoubleVar(value=2.5)
 
     notebook = ttk.Notebook()
     main_tab = ttk.Frame(notebook)
@@ -478,7 +478,7 @@ def main():
     granularity =  add_settings_var(advanced_settings, "Granularity",minimum=1, maximum=100,steps=1,val=1)
     amountOfSensors = add_settings_var(advanced_settings,"Amount of sensors",minimum=2, maximum=7,steps=1,val=3)
     amountOverlapped = add_settings_var(advanced_settings,"Amount of overlapped sensors",minimum=1, maximum=7,steps=1,val=2)
-    distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=3)
+    distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=2.5)
     def updateGran(I, was, crazyonce):
         manoutils.granularity_factor = int(granularity.get())
         print(manoutils.granularity_factor)
