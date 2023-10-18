@@ -94,6 +94,8 @@ def main():
             heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
+
+
     def showSignalsPressed():
         try:
             global commentsDict
@@ -124,7 +126,7 @@ def main():
             print(amountOfSensors.get())
             print(amountOverlapped.get())
             #20 threshold is hardcoded
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold.get() ,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 2)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
@@ -146,9 +148,25 @@ def main():
         export.createExcelWorkBook(title, int(ascendingMin.get()), int(transverseMin.get()), int(descendingMin.get()), int(sigmoidMin.get()), int(rectumMin.get()), int(rectumMax.get()), contractions, commentsDict, afstand)
         messagebox.showinfo("detection", "Exported files!")
 
-    def exportToXML():
+    def filtered_txt_file(inputf, outputf):
         try:
-            exportTitle = fileTitle.get() + "automated_detection_to_xml.txt"
+            with open(inputf, 'r') as input_file, open(outputf, 'w') as output_file:
+                lines = input_file.readlines()
+                output_file.writelines(lines[10:])
+        except FileNotFoundError:
+            print(f"'{inputf}' not found.")
+        except Exception as e:
+            print(f"error: {e}")
+
+    def also_export_a_txt():
+        global file
+        title = str(fileTitle.get()).split('.')[0] + "_pressure_data.txt"
+        filtered_txt_file(file, title)
+
+    def exportToXML():
+        also_export_a_txt()
+        try:
+            exportTitle = str(fileTitle.get()).split('.')[0] + "_sequences_data.txt"
             print(exportTitle)
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
@@ -188,7 +206,6 @@ def main():
                 sequencesTXT += "\t" + point
             sequencesTXT += "\n"+'</sequence>'
         return sequencesTXT
-
 
 
     def placeComment():
