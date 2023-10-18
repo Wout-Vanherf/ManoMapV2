@@ -126,7 +126,7 @@ def main():
             print(amountOfSensors.get())
             print(amountOverlapped.get())
             #20 threshold is hardcoded
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold.get() ,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold.get(),amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 2)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
@@ -166,7 +166,7 @@ def main():
     def exportToXML():
         also_export_a_txt()
         try:
-            exportTitle = str(fileTitle.get()).split('.')[0] + "_sequences_data.txt"
+            exportTitle = fileTitle.get() + "automated_detection_to_xml.txt"
             print(exportTitle)
         except NameError:
             messagebox.showinfo("Error", "Please select a file.")
@@ -496,8 +496,8 @@ def main():
 
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
     detectionThreshold = add_settings_var(advanced_settings, "Detection Threshold",minimum=1, maximum=50,steps=1,val=10)
-    granularity =  add_settings_var(advanced_settings, "Granularity",minimum=1, maximum=100,steps=1,val=1)
-    amountOfSensors = add_settings_var(advanced_settings,"Amount of sensors",minimum=2, maximum=7,steps=1,val=3)
+    granularity =  add_settings_var(advanced_settings, "Granularity",minimum=1, maximum=100,steps=1,val=10)
+    amountOfSensors = add_settings_var(advanced_settings,"Amount of sensors",minimum=2, maximum=7,steps=1,val=2)
     amountOverlapped = add_settings_var(advanced_settings,"Amount of overlapped sensors",minimum=1, maximum=7,steps=1,val=2)
     distance = add_settings_var(advanced_settings, "Distance between sensors (cm)",minimum=0.1, maximum=20,steps=0.1,val=2.5)
     def updateGran(I, was, crazyonce):
