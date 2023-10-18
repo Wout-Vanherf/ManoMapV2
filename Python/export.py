@@ -5,7 +5,6 @@ import csv
 import manoutils
 
 def createExcelWorkBook(name,startAscending,startTransverse,startDescending,startSigmoid,startRectum,endRectum, data, commentsDict, distance):
-    print(data)
     
     header = [
     ['Time', 'Ant/Retr', 'Amplitude', 'Velocity mm/s', 'startSensor', 'endSensor', 'lengthContraction']
@@ -16,25 +15,44 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     headerSize = len(header[0]) 
 #add regions
     count = 0
+    regionsline = [None, None, None, None, None, None, None, 'Ascending']
     while startAscending + count < startTransverse:
-        header[0].append('Ascending' + str(startAscending + count))
+        if count != 0:
+            regionsline.append(None)
+        header[0].append(startAscending + count)
         count += 1
     count = 0
+    regionsline.append('Transverse')
     while startTransverse + count < startDescending:
-        header[0].append('Transverse' + str(startTransverse + count))
+        if count != 0:
+            regionsline.append(None)
+        header[0].append(startTransverse + count)
         count += 1
     count = 0
+    regionsline.append('Descending')
     while startDescending + count < startSigmoid:
-        header[0].append('Descending' + str(startDescending + count))
+        if count != 0:
+            regionsline.append(None)
+        header[0].append(startDescending + count)
         count += 1
     count = 0
+    regionsline.append('Sigmoid')
     while startSigmoid + count < startRectum:
-        header[0].append('Sigmoid' + str(startSigmoid + count))
+        if count != 0:
+            regionsline.append(None)
+        header[0].append(startSigmoid + count)
         count += 1
     count = 0
+    regionsline.append('Rectum')
     while not startRectum + count > endRectum:
-        header[0].append('Rectum' + str(startRectum + count))
+        if count != 0:
+            regionsline.append(None)
+        header[0].append(startRectum + count)
         count += 1
+
+#blijkbaar kan excel enkel lists of list aannemen, header =[regionsline, header] werkt ni for some reason
+    regionsline = [regionsline]
+
 #try to adapt data to header format
     contractions = []
     contractionsDict = dict()
@@ -90,8 +108,10 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
         for line in contractions:
             header.append(line)
     except:
-        print("error in datalijn toevoegen")    
+        print("error in datalijn toevoegen")
 # Write all data to xlsx
+    for row in regionsline:
+        worksheet.append(row)
     for row in header:
         worksheet.append(row)
 #length of regions
@@ -140,7 +160,7 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     rownumber = 0
     for row in worksheet.iter_rows(min_row=0, values_only=True):
         rownumber += 1
-        if row[2] is None:
+        if row[2] is None and rownumber > 1:
             for row in worksheet.iter_rows(min_row=rownumber, max_row=rownumber, min_col=0, max_col=2):
                 for cell in row:
                     cell.fill = fill
