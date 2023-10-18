@@ -3,7 +3,7 @@ import numpy as np
 from scipy.signal import savgol_filter, wiener
 
 global granularity_factor
-granularity_factor=1
+granularity_factor=10
 
 def get_granularity_factor():
     return granularity_factor
