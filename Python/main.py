@@ -15,7 +15,7 @@ global valuesDict
 global commentsDict
 global contractions
 global exportDataXml
-
+global detectionThreshold
 
 commentsDict = dict()
 contractions = []
@@ -113,8 +113,10 @@ def main():
         try:
             global valuesDict
             global contractions
+            
             thresholdVals = thresholdSlider.getValues()
             minThreshold = int(thresholdVals[0])
+            detectionThreshold.get()
             filedata = manoutils.data_preperation(valuesDict)
             slidervals = visibleSensorSlider.getValues()
             first_sensor = int(slidervals[0])
@@ -122,7 +124,7 @@ def main():
             print(amountOfSensors.get())
             print(amountOverlapped.get())
             #20 threshold is hardcoded
-            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, 10,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
+            results = detection.find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold,amount_of_sensors=amountOfSensors.get(),amount_overlapped=amountOverlapped.get())
             contractions = detection.find_contractions_from_patterns(results, 2)
             messagebox.showinfo("detection", "detection completed!")
         except NameError:
@@ -476,6 +478,7 @@ def main():
     theme_frame.pack(side="bottom")
 
     line_opacity = add_settings_var(advanced_settings, "Line Opacity",minimum=0.2, maximum=1,steps=0.01)
+    detectionThreshold = add_settings_var(advanced_settings, "Detection Threshold",minimum=1, maximum=50,steps=1,val=10)
     granularity =  add_settings_var(advanced_settings, "Granularity",minimum=1, maximum=100,steps=1,val=1)
     amountOfSensors = add_settings_var(advanced_settings,"Amount of sensors",minimum=2, maximum=7,steps=1,val=3)
     amountOverlapped = add_settings_var(advanced_settings,"Amount of overlapped sensors",minimum=1, maximum=7,steps=1,val=2)
