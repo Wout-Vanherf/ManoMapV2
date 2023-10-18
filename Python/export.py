@@ -127,13 +127,13 @@ def createExcelWorkBook(name,startAscending,startTransverse,startDescending,star
     stopSig = stopDesc+lenSig
     stopRect = stopSig+lenRect
 
-#color the regions to distinguish them
+#colour the regions to distinguish them
     fill = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")
     for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=headerSize+1, max_col=stopAsc):
         for cell in row:
             cell.fill = fill
 
-    fill = PatternFill(start_color="000099", end_color="000099", fill_type="solid")
+    fill = PatternFill(start_color="FF00FF", end_color="FF00FF", fill_type="solid")
     for row in worksheet.iter_rows(min_row=1, max_row=1, min_col=1+stopAsc, max_col=stopTrans):
         for cell in row:
             cell.fill = fill
